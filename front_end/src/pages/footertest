@@ -1,0 +1,882 @@
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+
+import ngomna_logo from '../assets/ngomna_logo.png'
+import cenadi_logo from '../assets/logo_cenadi-removebg-preview.png'
+import minfi_logo from '../assets/logo_minfi-removebg-preview.png'
+
+import FacebookIcon from '@mui/icons-material/Facebook';
+import MailIcon from '@mui/icons-material/Mail';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+
+import { styled } from '@mui/system';
+
+const minfiLogoStyle = {
+  width: '130px',
+  height: '130px',
+  margin: '20px 50px',
+};
+
+
+const cenadiLogoStyle = {
+  width: '120px',
+  height: '110px',
+  margin: '20px 30px',
+};
+
+
+const ngomnaLogoStyle = {
+  width: '170px',
+  height: '170px',
+  margin: '1px 20px',
+};
+
+const StyledLink = styled(Link)({
+  color: 'black',
+  textDecoration: 'none',
+  fontSize: '18px',
+  fontFamily: 'Arial',
+  
+  '&:hover': {
+    color: 'green',
+    fontSize: '18px',
+    textDecoration: 'underline',
+    textDecorationColor: 'green'
+    
+  },
+});
+
+const StyledTypography = styled(Typography)({
+  fontFamily: "Arial",
+  fontSize: "20px",
+  fontWeight: "bold",
+  color: "black",
+});
+
+
+function Copyright() {
+  return (
+    <Typography variant="body2" color="black" mt={3} mb={1}>
+      {'Copyright © '}
+      <Link sx={{color: 'green', textDecoration: "none", fontFamily: "Arial", "&:hover": {textDecoration: 'underline',textDecorationColor: 'green'}}} href="/"> nGomna </Link>
+      {new Date().getFullYear()}
+    </Typography>
+  );
+}
+
+export default function Footer() {
+  return (
+    <Container
+      maxWidth="none"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: { xs: 4, sm: 8 },
+        py: { xs: 4, sm: 10 },
+        textAlign: { sm: 'center', md: 'left' },
+        backgroundColor: 'white',
+        padding: 0,
+        borderTop: '2px gray',
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          width: '100%',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 4,
+            minWidth: { xs: '100%', sm: '60%' },
+          }}
+        >
+          <Box sx={{ width: { xs: '100%', sm: '60%' } }}>
+            <Box sx={{
+              ml: '-15px',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
+            >
+              <Link href="https://minfi.gov.cm/en/home/">
+                <img
+                  src={minfi_logo}
+                  style={minfiLogoStyle}
+                  alt="logo of minfi"
+                />
+              </Link>
+              <Link href="https://www.cenadi.cm/">
+                <img
+                  src={cenadi_logo}
+                  style={cenadiLogoStyle}
+                  alt="logo of cenadi"
+                />
+              </Link>
+              <Link href="/">
+                <img
+                  src={ngomna_logo}
+                  style={ngomnaLogoStyle}
+                  alt="logo of ngomna"
+                />
+              </Link>
+            </Box>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            flexDirection: 'column',
+            gap: 1,
+            margin: "0px 30px",
+            mt: -5,
+          }}
+        >
+          <StyledTypography>
+            Features
+          </StyledTypography>
+          <StyledLink href="Payslips">
+            Payslips
+          </StyledLink>
+          <StyledLink href="Information">
+            Information
+          </StyledLink>
+          <StyledLink href="Notification">
+            Notification
+          </StyledLink>
+          <StyledLink href="Census">
+            Census
+          </StyledLink>
+          <StyledLink href="Messaging">
+            Messaging
+          </StyledLink>
+          <StyledLink href="Children">
+            Children
+          </StyledLink>
+          <StyledLink href="Security">
+            Security
+          </StyledLink>
+          <StyledLink href="OTP">
+            OTP
+          </StyledLink>
+        </Box>
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            flexDirection: 'column',
+            gap: 1,
+            margin: "0px 30px",
+            mt: -5,
+          }}
+        >
+          <StyledTypography>
+          About
+          </StyledTypography>
+          <StyledLink href="Mission">
+            Mission
+          </StyledLink>
+          <StyledLink href="Vision">
+            Vision
+          </StyledLink>
+          <StyledLink href="Perspectives">
+            Perspectives
+          </StyledLink>
+        </Box>
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            flexDirection: 'column',
+            gap: 1,
+            margin: "0px 30px",
+            mt: -5,
+          }}
+        >
+          <StyledTypography>
+          Contact
+          </StyledTypography>
+          <StyledLink href="https://wa.me/+237650780347">
+            Whatsapp
+          </StyledLink>
+          <StyledLink href="mailto:app.contact@cenadi.cm">
+            E-mail
+          </StyledLink>
+          <StyledLink href="https://www.facebook.com/profile.php?id=61550797871692">
+            Facebook
+          </StyledLink>
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          pt: { xs: 4, sm: 8 }, // Increased padding top
+          pb: { xs: 2, sm: 4 }, // Decreased padding bottom
+          width: '100%',
+          borderTop: '1px solid',
+          borderColor: 'divider',
+          marginTop: 'auto', // Pushed to the bottom
+        }}
+      >
+        <div>
+          <Copyright />
+        </div>
+        <Link href="download">
+          <Button variant="contained" sx={{borderRadius: 2, mt: 1, ml: -40, fontFamily:"Arial", fontSize:'17px', background: 'linear-gradient(#001400, #06A903)', color:"white", "&:hover": {background:'linear-gradient(#001400, #05FF00)', boxShadow: "0px 4px 20px rgba(173, 255, 47, 0.5)" }}}>
+            DOWNLOAD
+          </Button>
+        </Link>
+        <Link sx={{textDecoration: 'underline', color: 'black', mt: 2, mr: -40, "&:hover":{color: 'green'}}} href="">French</Link>
+        <Stack
+          direction="row"
+          justifyContent="left"
+          spacing={2}
+          useFlexGap
+        >
+          <IconButton
+            href="https://wa.me/+237650780347"
+            aria-label="whatsapp"
+            sx={{ alignSelf: 'center', color:"black", '&:hover': { color: 'green' }}}
+          >
+            <WhatsAppIcon fontSize='large'/>
+          </IconButton>
+          <IconButton
+            href="mailto:app.contact@cenadi.cm"
+            aria-label="mail"
+            sx={{ alignSelf: 'center', color:"black",  '&:hover': { color: 'green' }}}
+          >
+            <MailIcon fontSize='large'/>
+          </IconButton>
+          <IconButton
+            href="https://www.facebook.com/profile.php?id=61550797871692"
+            aria-label="facebook"
+            sx={{ alignSelf: 'center', color:"black", '&:hover': { color: 'green' }}}
+          >
+            <FacebookIcon fontSize='large'/>
+          </IconButton>
+        </Stack>
+      </Box>
+    </Container>
+  );
+}
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import { styled } from '@mui/system';
+import ngomna_logo from '../assets/ngomna_logo.png';
+import cenadi_logo from '../assets/logo_cenadi-removebg-preview.png';
+import minfi_logo from '../assets/logo_minfi-removebg-preview.png';
+
+import FacebookIcon from '@mui/icons-material/Facebook';
+import MailIcon from '@mui/icons-material/Mail';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+
+const minfiLogoStyle = {
+  width: '130px',
+  height: 'auto',
+};
+
+const cenadiLogoStyle = {
+  width: '120px',
+  height: 'auto',
+  marginTop: 40,
+  marginLeft: 20,
+};
+
+const ngomnaLogoStyle = {
+  width: '170px',
+  height: 'auto',
+};
+
+const StyledLink = styled(Link)({
+  color: 'black',
+  textDecoration: 'none',
+  fontSize: '17px',
+  fontFamily: 'Arial',
+  
+  '&:hover': {
+    color: 'green',
+    fontSize: '17px',
+    textDecoration: 'underline',
+    textDecorationColor: 'green'
+  },
+});
+
+const StyledTypography = styled(Typography)({
+  fontFamily: "Arial",
+  fontSize: "20px",
+  fontWeight: "bold",
+  color: "black",
+  marginBottom: 1,
+});
+
+
+function Copyright() {
+  return (
+    <Typography variant="body2" color="black" mt={1}>
+      {'Copyright © '}
+      <Link sx={{color: 'green', textDecoration: "none", fontFamily: "Arial", "&:hover": {textDecoration: 'underline', textDecorationColor: 'green'}}} href="/"> nGomna </Link>
+      {new Date().getFullYear()}
+    </Typography>
+  );
+}
+
+export default function Footer() {
+  return (
+    <Container
+      maxWidth="none"
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: { xs: 0, sm: 2 },
+        py: { xs: 2, sm: 4 },
+        textAlign: { sm: 'center', md: 'left' },
+        marginTop: -10,
+        backgroundColor:"#FFFFFF",
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',  
+          flexDirection: { xs: 'column', sm: 'row' },
+          width: '100%',
+          justifyContent: 'space-between',
+          mt: { xs: 0, sm: 2 },
+          gap: 0.5,
+          paddingLeft: '5%',
+          paddingRight: '5%',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 4,
+            minWidth: { xs: '100%', sm: 'auto' },
+          }}
+        >
+          <Box sx={{ width: { xs: '100%', sm: 'auto'} }}>
+            <Box sx={{ ml: '-15px' }}>
+              <Link href="https://minfi.gov.cm/en/home/">
+                <img
+                  src={minfi_logo}
+                  style={minfiLogoStyle}
+                  alt="logo of minfi"
+                />
+              </Link>
+            </Box>
+          </Box>
+          <Box sx={{ width: { xs: '100%', sm: 'auto' } }}>
+            <Box sx={{ ml: '-15px' }}>
+              <Link href="https://www.cenadi.cm/">
+                <img
+                  src={cenadi_logo}
+                  style={cenadiLogoStyle}
+                  alt="logo of cenadi"
+                />
+              </Link>
+            </Box>
+          </Box>
+          <Box sx={{ width: { xs: '100%', sm: 'auto' } }}>
+            <Box sx={{ ml: '-15px' }}>
+              <Link href="/">
+                <img
+                  src={ngomna_logo}
+                  style={ngomnaLogoStyle}
+                  alt="logo of ngomna"
+                />
+              </Link>
+            </Box>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            flexDirection: 'column',
+            gap: 1,
+          }}
+        >
+          <Typography variant="body2" fontWeight={600}>
+            Product
+          </Typography>
+          <Link color="text.secondary" href="#">
+            Features
+          </Link>
+          <Link color="text.secondary" href="#">
+            Testimonials
+          </Link>
+          <Link color="text.secondary" href="#">
+            Highlights
+          </Link>
+          <Link color="text.secondary" href="#">
+            Pricing
+          </Link>
+          <Link color="text.secondary" href="#">
+            FAQs
+          </Link>
+        </Box>
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            flexDirection: 'column',
+            gap: 1,
+          }}
+        >
+          <Typography variant="body2" fontWeight={600}>
+            Company
+          </Typography>
+          <Link color="text.secondary" href="#">
+            About us
+          </Link>
+          <Link color="text.secondary" href="#">
+            Careers
+          </Link>
+          <Link color="text.secondary" href="#">
+            Press
+          </Link>
+        </Box>
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            flexDirection: 'column',
+            gap: 1,
+          }}
+        >
+          <Typography variant="body2" fontWeight={600}>
+            Legal
+          </Typography>
+          <Link color="text.secondary" href="#">
+            Terms
+          </Link>
+          <Link color="text.secondary" href="#">
+            Privacy
+          </Link>
+          <Link color="text.secondary" href="#">
+            Contact
+          </Link>
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          pt: { xs: 4, sm: 8 },
+          width: '90%',
+          borderTop: '1px solid',
+          borderColor: 'divider',
+        }}
+      >
+        <Stack
+          direction="row"
+          justifyContent="flex-start"
+          spacing={2}
+          useFlexGap
+        >
+          <IconButton
+            color="inherit"
+            href="https://wa.me/+237650780347"
+            aria-label="whatsapp"
+            sx={{ alignSelf: 'center', color:"black", '&:hover': { color: 'green' }  }}
+          >
+            <WhatsAppIcon fontSize='large'/>
+          </IconButton>
+          <IconButton
+            color="inherit"
+            href="mailto:app.contact@cenadi.cm"
+            aria-label="mail"
+            sx={{ alignSelf: 'center', color:"black", '&:hover': { color: 'green' } }}
+          >
+            <MailIcon fontSize='large'/>
+          </IconButton>
+          <IconButton
+            color="inherit"
+            href="https://www.facebook.com/profile.php?id=61550797871692"
+            aria-label="facebook"
+            sx={{ alignSelf: 'center', color:"black", '&:hover': { color: 'green' } }}
+          >
+            <FacebookIcon fontSize='large'/>
+          </IconButton>
+        </Stack>
+        <div>
+          <Copyright />
+        </div>
+        <Link href="download">
+          <Button variant="contained" justifyContent="flex-end" sx={{borderRadius: 2, mt: 1, fontFamily:"Arial", fontSize:'17px', background: 'linear-gradient(#001400, #06A903)', color:"white", "&:hover": {background:'linear-gradient(#001400, #05FF00)', boxShadow: "0px 4px 20px rgba(173, 255, 47, 0.5)" }}}>
+            DOWNLOAD
+          </Button>
+        </Link>
+      </Box>
+    </Container>
+  );
+}
+
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+
+import ngomna_logo from '../assets/ngomna_logo.png';
+import cenadi_logo from '../assets/logo_cenadi-removebg-preview.png';
+import minfi_logo from '../assets/logo_minfi-removebg-preview.png';
+
+import FacebookIcon from '@mui/icons-material/Facebook';
+import MailIcon from '@mui/icons-material/Mail';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+
+import { styled } from '@mui/system';
+
+const minfiLogoStyle = {
+  width: '130px',
+  height: 'auto',
+};
+
+const cenadiLogoStyle = {
+  width: '120px',
+  height: 'auto',
+  marginTop: 40,
+  marginLeft: 20,
+};
+
+const ngomnaLogoStyle = {
+  width: '170px',
+  height: 'auto',
+};
+
+const StyledLink = styled(Link)({
+  color: 'black',
+  textDecoration: 'none',
+  fontSize: '17px',
+  fontFamily: 'Arial',
+  
+  '&:hover': {
+    color: 'green',
+    fontSize: '17px',
+    textDecoration: 'underline',
+    textDecorationColor: 'green'
+    
+  },
+});
+
+const StyledTypography = styled(Typography)({
+  fontFamily: "Arial",
+  fontSize: "17px",
+  fontWeight: "bold",
+  color: "black",
+});
+
+function Copyright() {
+  return (
+    <Typography variant="body2" color="black">
+      {'Copyright © '}
+      <Link sx={{color: 'green', textDecoration: "none", fontFamily: "Arial", "&:hover": {textDecoration: 'underline', textDecorationColor: 'green'}}} href="/"> nGomna </Link>
+      {new Date().getFullYear()}
+    </Typography>
+  );
+}
+
+export default function Footer() {
+  return (
+    <Container
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: { xs: 4, sm: 8 },
+        py: { xs: 8, sm: 10 },
+        textAlign: { sm: 'center', md: 'left' },
+        mt: -10,
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',  
+          flexDirection: { xs: 'column', sm: 'row' },
+          width: '100%',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 4,
+            minWidth: { xs: 'auto', sm: 'auto' },
+          }}
+        >
+          <Box sx={{ width: { xs: 'auto', sm: 'auto'}}}>
+            <Box sx={{ ml: '-15px' }}>
+              <Link href="https://minfi.gov.cm/en/home/">
+                <img
+                  src={minfi_logo}
+                  style={minfiLogoStyle}
+                  alt="logo of minfi"
+                />
+              </Link>
+            </Box>
+          </Box>
+          <Box sx={{ width: { xs: 'auto', sm: 'auto' } }}>
+            <Box sx={{ ml: '-15px' }}>
+              <Link href="https://www.cenadi.cm/">
+                <img
+                  src={cenadi_logo}
+                  style={cenadiLogoStyle}
+                  alt="logo of cenadi"
+                />
+              </Link>
+            </Box>
+          </Box>
+          <Box sx={{ width: { xs: 'auto', sm: 'auto' } }}>
+            <Box sx={{ ml: '-150px' }}>
+              <Link href="/">
+                <img
+                  src={ngomna_logo}
+                  style={ngomnaLogoStyle}
+                  alt="logo of ngomna"
+                />
+              </Link>
+            </Box>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            flexDirection: 'column',
+            gap: 1,
+          }}
+        >
+          <StyledTypography>
+            Features
+          </StyledTypography>
+          <StyledLink href="Payslips">
+            Payslips
+          </StyledLink>
+          <StyledLink href="Information">
+            Information
+          </StyledLink>
+          <StyledLink href="Notification">
+            Notification
+          </StyledLink>
+          <StyledLink href="Census">
+            Census
+          </StyledLink>
+          <StyledLink href="Messaging">
+            Messaging
+          </StyledLink>
+          <StyledLink href="Children">
+            Children
+          </StyledLink>
+          <StyledLink href="Security">
+            Security
+          </StyledLink>
+          <StyledLink href="OTP">
+            OTP
+          </StyledLink>
+        </Box>
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            flexDirection: 'column',
+            gap: 1,
+          }}
+        >
+          <StyledTypography>
+          About
+          </StyledTypography>
+          <StyledLink href="Mission">
+            Mission
+          </StyledLink>
+          <StyledLink href="Vision">
+            Vision
+          </StyledLink>
+          <StyledLink href="Perspectives">
+            Perspectives
+          </StyledLink>
+        </Box>
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            flexDirection: 'column',
+            gap: 1,
+          }}
+        >
+          <StyledTypography>
+          Contact
+          </StyledTypography>
+          <StyledLink href="https://wa.me/+237650780347">
+            Whatsapp
+          </StyledLink>
+          <StyledLink href="mailto:app.contact@cenadi.cm">
+            E-mail
+          </StyledLink>
+          <StyledLink href="https://www.facebook.com/profile.php?id=61550797871692">
+            Facebook
+          </StyledLink>
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          pt: { xs: 4, sm: 8 },
+          width: '100%',
+          borderTop: '1px solid',
+          borderColor: 'divider',
+          mb: -10,
+        }}
+      >
+        <Stack
+          direction="row"
+          justifyContent="flex-start"
+          spacing={2}
+          useFlexGap
+          sx={{mb:2}}
+        >
+          <IconButton
+            href="https://wa.me/+237650780347"
+            aria-label="whatsapp"
+            sx={{ alignSelf: 'center', '&:hover': { color: 'green' }  }}
+          >
+            <WhatsAppIcon fontSize='large'/>
+          </IconButton>
+          <IconButton
+            href="mailto:app.contact@cenadi.cm"
+            aria-label="mail"
+            sx={{ alignSelf: 'center', '&:hover': { color: 'green' } }}
+          >
+            <MailIcon fontSize='large'/>
+          </IconButton>
+          <IconButton
+            href="https://www.facebook.com/profile.php?id=61550797871692"
+            aria-label="facebook"
+            sx={{ alignSelf: 'center', '&:hover': { color: 'green' } }}
+          >
+            <FacebookIcon fontSize='large'/>
+          </IconButton>
+        </Stack>
+        <div>
+          <Copyright sx={{mb:2}}/>
+        </div>
+        <Link href="download">
+          <Button variant="contained" justifyContent="flex-end" sx={{mb:2, borderRadius: 2, fontFamily:"Arial", fontSize:'17px', background: 'linear-gradient(#001400, #06A903)', color:"white", "&:hover": {background:'linear-gradient(#001400, #05FF00)', boxShadow: "0px 4px 20px rgba(173, 255, 47, 0.5)" }}}>
+            DOWNLOAD
+          </Button>
+        </Link>
+      </Box>
+    </Container>
+  );
+}
+<Box
+sx={{
+  display: 'flex',  
+  flexDirection: { xs: 'column', sm: 'row' },
+  width: '100%',
+  justifyContent: 'space-between',
+}}
+>
+<Box
+  sx={{
+    display: 'flex',
+    flexDirection: 'row',
+    minWidth: { xs: '100%', sm: '60%' },
+  }}
+>
+  <Box sx={{ width: { xs: 'auto', sm: 'auto'} }}>
+    <Box sx={{ ml: '-15px' }}>
+      <Link href="https://minfi.gov.cm/en/home/">
+        <img
+          src={minfi_logo}
+          style={minfiLogoStyle}
+          alt="logo of minfi"
+        />
+      </Link>
+    </Box>
+  </Box>
+  <Box sx={{ width: { xs: 'auto', sm: 'auto' }, ml:{ xs: '90px', sm: 'auto'} }}>
+    <Box sx={{ ml: '-80px'}}>
+      <Link href="https://www.cenadi.cm/">
+        <img
+          src={cenadi_logo}
+          style={cenadiLogoStyle}
+          alt="logo of cenadi"
+        />
+      </Link>
+    </Box>
+  </Box>
+  <Box sx={{ width: { xs: 'auto', sm: 'auto' }, ml:{ xs: '130px', sm: 'auto'} }}>
+    <Box sx={{ ml: '-15px' }}>
+      <Link href="/">
+        <img
+          src={ngomna_logo}
+          style={ngomnaLogoStyle}
+          alt="logo of ngomna"
+        />
+      </Link>
+    </Box>
+  </Box>
+</Box>
+<Box
+  sx={{
+    display: 'flex',
+    flexDirection: { xs: 'column', sm: 'row' },
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    gap: 1,
+  }}
+>
+  <Box sx={{ width: '100%', minWidth: '30%' }}>
+    <Box sx={{ ml: '-15px' }}>
+      <Link href="https://minfi.gov.cm/en/home/">
+        <img
+          src={minfi_logo}
+          style={minfiLogoStyle}
+          alt="logo of minfi"
+        />
+      </Link>
+    </Box>
+  </Box>
+  <Box sx={{ width: '100%', minWidth: '30%' }}>
+    <Box sx={{ ml: '-15px' }}>
+      <Link href="https://www.cenadi.cm/">
+        <img
+          src={cenadi_logo}
+          style={cenadiLogoStyle}
+          alt="logo of cenadi"
+        />
+      </Link>
+    </Box>
+  </Box>
+  <Box sx={{ width: '100%', minWidth: '30%' }}>
+    <Box sx={{ ml: '-15px' }}>
+      <Link href="/">
+        <img
+          src={ngomna_logo}
+          style={ngomnaLogoStyle}
+          alt="logo of ngomna"
+        />
+      </Link>
+    </Box>
+  </Box>
+</Box>

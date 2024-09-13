@@ -1,110 +1,189 @@
-//app.js
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './styles/manager.css';
 
 const App = () => {
-  const [features, setFeatures] = useState([]);
-  const [newFeature, setNewFeature] = useState('');
-  const [editingIndex, setEditingIndex] = useState(null);
-  const [editingFeature, setEditingFeature] = useState('');
+  const [menus, setMenus] = useState([]);
+  const [newMenuTitle, setNewMenuTitle] = useState('');
+  const [newMenuItemLabel, setNewMenuItemLabel] = useState('');
+  const [editingMenu, setEditingMenu] = useState(null);
+  const [editingMenuTitle, setEditingMenuTitle] = useState('');
+  const [editingMenuItem, setEditingMenuItem] = useState(null);
+  const [editingMenuItemLabel, setEditingMenuItemLabel] = useState('');
+  const [selectedMenuId, setSelectedMenuId] = useState(null);
 
   useEffect(() => {
-    fetchFeatures();
+    fetchMenus();
   }, []);
 
-  const fetchFeatures = async () => {
+  const fetchMenus = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/features');
-      setFeatures(response.data);
+      const response = await axios.get('http://localhost:5000/menus');
+      setMenus(response.data);
     } catch (error) {
-      console.error('Error fetching features:', error);
+      console.error('Error fetching menus:', error);
     }
   };
 
-  const addFeature = async () => {
-    if (newFeature.trim() && !features.includes(newFeature.trim())) {
+  const addMenu = async () => {
+    if (newMenuTitle.trim()) {
       try {
-        await axios.post('http://localhost:5000/features', { name: newFeature.trim() });
-        fetchFeatures();
-        setNewFeature('');
+        await axios.post('http://localhost:5000/menus', { title: newMenuTitle.trim(), menuItems: [] });
+        fetchMenus();
+        setNewMenuTitle('');
       } catch (error) {
-        console.error('Error adding feature:', error);
+        console.error('Error adding menu:', error);
       }
     }
   };
 
-  const deleteFeature = async (index) => {
-    const featureToDelete = features[index];
+  const deleteMenu = async (menuId) => {
     try {
-      await axios.delete(`http://localhost:5000/features/${featureToDelete}`);
-      fetchFeatures();
+      await axios.delete(`http://localhost:5000/menus/${menuId}`);
+      fetchMenus();
     } catch (error) {
-      console.error('Error deleting feature:', error);
+      console.error('Error deleting menu:', error);
     }
   };
 
-  const startEditing = (index) => {
-    setEditingIndex(index);
-    setEditingFeature(features[index]);
+  const startEditingMenu = (menu) => {
+    setEditingMenu(menu);
+    setEditingMenuTitle(menu.title);
   };
 
-  const saveEdit = async () => {
-    if (editingFeature.trim() && !features.includes(editingFeature.trim())) {
-      const featureToUpdate = features[editingIndex];
+  const saveMenuEdit = async () => {
+    if (editingMenuTitle.trim()) {
       try {
-        await axios.put(`http://localhost:5000/features/${featureToUpdate}`, { name: editingFeature.trim() });
-        fetchFeatures();
-        cancelEditing();
+        await axios.put(`http://localhost:5000/menus/${editingMenu.id}`, { title: editingMenuTitle });
+        fetchMenus();
+        cancelEditingMenu();
       } catch (error) {
-        console.error('Error updating feature:', error);
+        console.error('Error updating menu:', error);
       }
     }
   };
 
-  const cancelEditing = () => {
-    setEditingIndex(null);
-    setEditingFeature('');
+  const cancelEditingMenu = () => {
+    setEditingMenu(null);
+    setEditingMenuTitle('');
+  };
+
+  const addMenuItem = async () => {
+    if (newMenuItemLabel.trim() && selectedMenuId) {
+      try {
+        await axios.post(`http://localhost:5000/menus/${selectedMenuId}/menu-items`, { label: newMenuItemLabel.trim() });
+        fetchMenus();
+        setNewMenuItemLabel('');
+      } catch (error) {
+        console.error('Error adding menu item:', error);
+      }
+    }
+  };
+
+  const deleteMenuItem = async (menuId, itemId) => {
+    try {
+      await axios.delete(`http://localhost:5000/menus/${menuId}/menu-items/${itemId}`);
+      fetchMenus();
+    } catch (error) {
+      console.error('Error deleting menu item:', error);
+    }
+  };
+
+  const startEditingMenuItem = (menuId, item) => {
+    setEditingMenuItem({ menuId, item });
+    setEditingMenuItemLabel(item.label);
+  };
+
+  const saveMenuItemEdit = async () => {
+    if (editingMenuItemLabel.trim() && editingMenuItem) {
+      try {
+        await axios.put(`http://localhost:5000/menus/${editingMenuItem.menuId}/menu-items/${editingMenuItem.item.id}`, { label: editingMenuItemLabel.trim() });
+        fetchMenus();
+        cancelEditingMenuItem();
+      } catch (error) {
+        console.error('Error updating menu item:', error);
+      }
+    }
+  };
+
+  const cancelEditingMenuItem = () => {
+    setEditingMenuItem(null);
+    setEditingMenuItemLabel('');
   };
 
   return (
     <div className="App">
-      <h1>Admin Dashboard - Features</h1>
+      <h1>Admin Dashboard - Menus</h1>
       <div className="menu">
-        <h2>Menu: Features</h2>
+        <h2>Menus</h2>
+        <input
+          type="text"
+          value={newMenuTitle}
+          onChange={(e) => setNewMenuTitle(e.target.value)}
+          placeholder="Add new menu"
+        />
+        <button onClick={addMenu}>Add Menu</button>
+
         <ul>
-          {features.map((feature, index) => (
-            <li key={index}>
-              {editingIndex === index ? (
+          {menus.map((menu) => (
+            <li key={menu.id}>
+              {editingMenu && editingMenu.id === menu.id ? (
                 <>
                   <input
                     type="text"
-                    value={editingFeature}
-                    onChange={(e) => setEditingFeature(e.target.value)}
+                    value={editingMenuTitle}
+                    onChange={(e) => setEditingMenuTitle(e.target.value)}
                   />
-                  <button onClick={saveEdit}>Save</button>
-                  <button onClick={cancelEditing}>Cancel</button>
+                  <button onClick={saveMenuEdit}>Save</button>
+                  <button onClick={cancelEditingMenu}>Cancel</button>
                 </>
               ) : (
                 <>
-                  {feature}
-                  <button onClick={() => startEditing(index)}>Edit</button>
-                  <button onClick={() => deleteFeature(index)}>Delete</button>
+                  {menu.title}
+                  <button onClick={() => startEditingMenu(menu)}>Edit</button>
+                  <button onClick={() => deleteMenu(menu.id)}>Delete</button>
+                  <button onClick={() => setSelectedMenuId(menu.id)}>Manage Items</button>
                 </>
+              )}
+
+              {selectedMenuId === menu.id && (
+                <div className="menu-items">
+                  <h3>Menu Items</h3>
+                  <input
+                    type="text"
+                    value={newMenuItemLabel}
+                    onChange={(e) => setNewMenuItemLabel(e.target.value)}
+                    placeholder="Add new item"
+                  />
+                  <button onClick={addMenuItem}>Add Item</button>
+                  <ul>
+                    {menu.menuItems.map((item) => (
+                      <li key={item.id}>
+                        {editingMenuItem && editingMenuItem.item.id === item.id ? (
+                          <>
+                            <input
+                              type="text"
+                              value={editingMenuItemLabel}
+                              onChange={(e) => setEditingMenuItemLabel(e.target.value)}
+                            />
+                            <button onClick={saveMenuItemEdit}>Save</button>
+                            <button onClick={cancelEditingMenuItem}>Cancel</button>
+                          </>
+                        ) : (
+                          <>
+                            {item.label}
+                            <button onClick={() => startEditingMenuItem(menu.id, item)}>Edit</button>
+                            <button onClick={() => deleteMenuItem(menu.id, item.id)}>Delete</button>
+                          </>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
             </li>
           ))}
         </ul>
-        <div className="add-feature">
-          <input
-            type="text"
-            value={newFeature}
-            onChange={(e) => setNewFeature(e.target.value)}
-            placeholder="Add new feature"
-          />
-          <button onClick={addFeature}>Add</button>
-        </div>
       </div>
     </div>
   );

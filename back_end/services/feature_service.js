@@ -1,31 +1,48 @@
-const { Feature } = require('../config/Database');
+const { Menu, MenuItem } = require('../config/Database');
 
-exports.getAllFeatures = async () => {
-  const features = await Feature.findAll();
-  return features.map(feature => feature.name);
+exports.getAllMenus = async () => {
+  return await Menu.findAll({
+    include: [{ model: MenuItem, as: 'menuItems' }]
+  });
 };
 
-exports.createFeature = async (name) => {
-  const feature = await Feature.create({ name });
-  return feature.name;
+exports.createMenu = async (title, menuItems) => {
+  return await Menu.create({
+    title,
+    menuItems
+  }, {
+    include: [{ model: MenuItem, as: 'menuItems' }]
+  });
 };
 
-exports.updateFeature = async (index, name) => {
-  const feature = await Feature.findOne({ where: { name: index } });
-  if (feature) {
-    feature.name = name;
-    await feature.save();
-    return feature.name;
+exports.updateMenu = async (id, title, menuItems) => {
+  const menu = await Menu.findByPk(id, {
+    include: [{ model: MenuItem, as: 'menuItems' }]
+  });
+  if (menu) {
+    menu.title = title;
+    await menu.save();
+
+    if (menuItems) {
+      await Promise.all(menuItems.map(async (item) => {
+        const menuItem = await MenuItem.findByPk(item.id);
+        if (menuItem) {
+          menuItem.label = item.label;
+          await menuItem.save();
+        }
+      }));
+    }
+    return menu;
   } else {
-    throw new Error('Feature not found');
+    throw new Error('Menu not found');
   }
 };
 
-exports.deleteFeature = async (index) => {
-  const feature = await Feature.findOne({ where: { name: index } });
-  if (feature) {
-    await feature.destroy();
+exports.deleteMenu = async (id) => {
+  const menu = await Menu.findByPk(id);
+  if (menu) {
+    await menu.destroy();
   } else {
-    throw new Error('Feature not found');
+    throw new Error('Menu not found');
   }
 };

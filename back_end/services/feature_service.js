@@ -1,3 +1,4 @@
+//service
 const { Menu, MenuItem } = require('../config/Database');
 
 exports.getAllMenus = async () => {

@@ -1,46 +1,41 @@
 const { Menu, MenuItem } = require('../config/Database');
 
-// Get all menus with their menu items
+// Get all menus
 exports.getMenus = async (req, res) => {
   try {
     const menus = await Menu.findAll({
       include: [{ model: MenuItem, as: 'menuItems' }]
     });
     res.json(menus);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to retrieve menus' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Create a new menu with menu items
+// Create a new menu
 exports.createMenu = async (req, res) => {
-  const { title, menuItems } = req.body;
   try {
-    const menu = await Menu.create({
-      title,
-      menuItems
-    }, {
+    const { title, menuItems } = req.body;
+    const menu = await Menu.create({ title, menuItems }, {
       include: [{ model: MenuItem, as: 'menuItems' }]
     });
-    res.json(menu);
-  } catch (error) {
-    res.status(400).json({ error: 'Failed to create menu' });
+    res.status(201).json(menu);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Update a menu's title and its menu items
+// Update a menu
 exports.updateMenu = async (req, res) => {
-  const { id } = req.params;
-  const { title, menuItems } = req.body;
   try {
+    const { id } = req.params;
+    const { title, menuItems } = req.body;
     const menu = await Menu.findByPk(id, {
       include: [{ model: MenuItem, as: 'menuItems' }]
     });
     if (menu) {
       menu.title = title;
       await menu.save();
-
-      // Update menu items
       if (menuItems) {
         await Promise.all(menuItems.map(async (item) => {
           const menuItem = await MenuItem.findByPk(item.id);
@@ -50,79 +45,95 @@ exports.updateMenu = async (req, res) => {
           }
         }));
       }
-
       res.json(menu);
     } else {
-      res.status(404).json({ error: 'Menu not found' });
+      res.status(404).send('Menu not found');
     }
-  } catch (error) {
-    res.status(400).json({ error: 'Failed to update menu' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Delete a menu and its menu items
+// Delete a menu
 exports.deleteMenu = async (req, res) => {
-  const { id } = req.params;
   try {
+    const { id } = req.params;
     const menu = await Menu.findByPk(id);
     if (menu) {
       await menu.destroy();
-      res.json({ message: 'Menu deleted' });
+      res.status(204).send();
     } else {
-      res.status(404).json({ error: 'Menu not found' });
+      res.status(404).send('Menu not found');
     }
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to delete menu' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Get menu items for a specific menu
+exports.getMenuItems = async (req, res) => {
+  try {
+    const { menuId } = req.params;
+    const menu = await Menu.findByPk(menuId, {
+      include: [{ model: MenuItem, as: 'menuItems' }]
+    });
+    if (menu) {
+      res.json(menu.menuItems);
+    } else {
+      res.status(404).send('Menu not found');
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
 // Add a menu item to a specific menu
 exports.addMenuItem = async (req, res) => {
-  const { menuId } = req.params;
-  const { label } = req.body;
   try {
+    const { menuId } = req.params;
+    const { label } = req.body;
     const menu = await Menu.findByPk(menuId);
     if (menu) {
       const menuItem = await MenuItem.create({ label, menuId });
-      res.json(menuItem);
+      res.status(201).json(menuItem);
     } else {
-      res.status(404).json({ error: 'Menu not found' });
+      res.status(404).send('Menu not found');
     }
-  } catch (error) {
-    res.status(400).json({ error: 'Failed to add menu item' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Update a menu item within a specific menu
+// Update a menu item
 exports.updateMenuItem = async (req, res) => {
-  const { menuId, itemId } = req.params;
-  const { label } = req.body;
   try {
-    const menuItem = await MenuItem.findOne({ where: { id: itemId, menuId } });
+    const { menuId, itemId } = req.params;
+    const { label } = req.body;
+    const menuItem = await MenuItem.findByPk(itemId);
     if (menuItem) {
       menuItem.label = label;
       await menuItem.save();
       res.json(menuItem);
     } else {
-      res.status(404).json({ error: 'Menu item not found' });
+      res.status(404).send('Menu item not found');
     }
-  } catch (error) {
-    res.status(400).json({ error: 'Failed to update menu item' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Delete a menu item within a specific menu
+// Delete a menu item
 exports.deleteMenuItem = async (req, res) => {
-  const { menuId, itemId } = req.params;
   try {
-    const menuItem = await MenuItem.findOne({ where: { id: itemId, menuId } });
+    const { menuId, itemId } = req.params;
+    const menuItem = await MenuItem.findByPk(itemId);
     if (menuItem) {
       await menuItem.destroy();
-      res.json({ message: 'Menu item deleted' });
+      res.status(204).send();
     } else {
-      res.status(404).json({ error: 'Menu item not found' });
+      res.status(404).send('Menu item not found');
     }
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to delete menu item' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };

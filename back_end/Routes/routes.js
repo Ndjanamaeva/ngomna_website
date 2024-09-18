@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const feature_controller = require('../controllers/feature_controller');
+const feature_controller = require('../controllers/controller');
 
 // Routes for menus
 router.get('/', feature_controller.getMenus);

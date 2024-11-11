@@ -88,7 +88,7 @@ const Header = () => {
         position: "fixed",
         bgcolor: 'rgba(255, 255, 255, 0.4)',   
         flexShrink: 0,
-        height: '100px',  
+        height: '80px',  
         backdropFilter: 'blur(24px)', 
         border: '1px solid',
         borderColor: 'divider', 
@@ -99,7 +99,7 @@ const Header = () => {
             <MenuIcon />
           </IconButton>
           <Link to="/">
-            <img src={logo} alt="Logo" style={{ height: '150px', width: '150px' }} />
+            <img src={logo} alt="Logo" style={{ height: '145px', width: '145px' }} />
           </Link>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             <ul className="navigation-menu">

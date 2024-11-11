@@ -16,7 +16,7 @@ const Menu = sequelize.define('Menu', {
   }
 });
 
-// Define the Page model (page table)
+// Define the Page model (page table) with removed text and image fields
 const Page = sequelize.define('Page', {
   name: {
     type: DataTypes.STRING,
@@ -26,27 +26,17 @@ const Page = sequelize.define('Page', {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
-  },
-  text: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  image: {
-    type: DataTypes.STRING,
-    allowNull: true
   }
+  // Removed text and image fields
 });
 
-// Define the MenuItem model (menu_item table)
+// Define the MenuItem model (menu_item table) with removed link field
 const MenuItem = sequelize.define('MenuItem', {
   label: {
     type: DataTypes.STRING,
     allowNull: false
-  },
-  link: {  // Add a link field to MenuItem
-    type: DataTypes.STRING,
-    allowNull: false
   }
+  // Removed link field
 });
 
 // Define the relationships
@@ -60,7 +50,6 @@ MenuItem.belongsTo(Menu, {
   as: 'menu',
 });
 
-// Each MenuItem corresponds to one Page
 MenuItem.belongsTo(Page, {
   foreignKey: 'pageId',
   as: 'page'
@@ -77,38 +66,39 @@ sequelize.sync({ force: true }) // This will recreate the tables
 
     // Create pages
     const pages = await Page.bulkCreate([
-      { name: 'Payslips', link: '/payslips', text: 'Payslips Page', image: 'payslips.jpg' },
-      { name: 'Information', link: '/information', text: 'Information Page', image: 'information.jpg' },
-      { name: 'Notifications', link: '/notifications', text: 'Notifications Page', image: 'notifications.jpg' },
-      { name: 'Census', link: '/census', text: 'Census Page', image: 'census.jpg' },
-      { name: 'Messaging', link: '/messaging', text: 'Messaging Page', image: 'messaging.jpg' },
-      { name: 'Children', link: '/children', text: 'Children Page', image: 'children.jpg' },
-      { name: 'Security', link: '/security', text: 'Security Page', image: 'security.jpg' },
-      { name: 'OTP', link: '/otp', text: 'OTP Page', image: 'otp.jpg' },
-      { name: 'DGI', link: '/dgi', text: 'DGI Page', image: 'dgi.jpg' }
+      { name: 'Payslips', link: '/payslips' },
+      { name: 'Information', link: '/information' },
+      { name: 'Notifications', link: '/notifications' },
+      { name: 'Census', link: '/census' },
+      { name: 'Messaging', link: '/messaging' },
+      { name: 'Children', link: '/children' },
+      { name: 'Security', link: '/security' },
+      { name: 'OTP', link: '/otp' },
+      { name: 'DGI', link: '/dgi' }
     ]);
 
     console.log('Pages created:', pages);
 
-    // Create a menu called 'features' with menu items linked to pages
+    // Create a menu called 'features'
     const featuresMenu = await Menu.create({
-      title: 'features',
-      menuItems: [
-        { label: 'payslips', link: pages[0].link, pageId: pages[0].id },
-        { label: 'information', link: pages[1].link, pageId: pages[1].id },
-        { label: 'notifications', link: pages[2].link, pageId: pages[2].id },
-        { label: 'census', link: pages[3].link, pageId: pages[3].id },
-        { label: 'messaging', link: pages[4].link, pageId: pages[4].id },
-        { label: 'children', link: pages[5].link, pageId: pages[5].id },
-        { label: 'security', link: pages[6].link, pageId: pages[6].id },
-        { label: 'OTP', link: pages[7].link, pageId: pages[7].id },
-        { label: 'DGI', link: pages[8].link, pageId: pages[8].id }
-      ]
-    }, {
-      include: [{ model: MenuItem, as: 'menuItems' }]
+      title: 'features'
     });
 
+    // Create menu items for the features menu (removed link field)
+    const menuItems = await MenuItem.bulkCreate([
+      { label: 'payslips', menuId: featuresMenu.id, pageId: pages[0].id },
+      { label: 'information', menuId: featuresMenu.id, pageId: pages[1].id },
+      { label: 'notifications', menuId: featuresMenu.id, pageId: pages[2].id },
+      { label: 'census', menuId: featuresMenu.id, pageId: pages[3].id },
+      { label: 'messaging', menuId: featuresMenu.id, pageId: pages[4].id },
+      { label: 'children', menuId: featuresMenu.id, pageId: pages[5].id },
+      { label: 'security', menuId: featuresMenu.id, pageId: pages[6].id },
+      { label: 'OTP', menuId: featuresMenu.id, pageId: pages[7].id },
+      { label: 'DGI', menuId: featuresMenu.id, pageId: pages[8].id }
+    ]);
+
     console.log('Menu with menu items created:', featuresMenu.toJSON());
+    console.log('Menu items created:', menuItems);
   })
   .catch(err => {
     console.error('Unable to create tables:', err);

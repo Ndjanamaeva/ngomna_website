@@ -1,0 +1,64 @@
+/* src/Header.css */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    height: 80px;
+  }
+  
+  .menu-icon {
+    font-size: 24px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px; /* Hide sidebar off-screen */
+    width: 200px;
+    height: 100%;
+    background-color: #444;
+    color: white;
+    transition: left 0.3s ease;
+    padding: 20px;
+  }
+  
+  .sidebar.open {
+    left: 0; /* Show sidebar */
+  }
+  
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    margin: 30px 0;
+    transition: background-color 0.3s ease; /* Smooth transition */
+  }
+  
+  /* Hover effect for menu items */
+  li:hover {
+    background-color: #555; /* Change background color on hover */
+    cursor: pointer; /* Change cursor to pointer */
+  }
+  
+  a {
+    text-decoration: none;
+    color: white;
+    padding: 5px; /* Add some padding for better click area */
+  }

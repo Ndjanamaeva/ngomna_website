@@ -12,10 +12,11 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Routes
-app.use('/menus', featureRoutes);
+app.use('/menus', featureRoutes);  // Route for menu-related actions
+app.use('/pages', featureRoutes);  // Route for page-related actions
 
-// Sync models with the database
-sequelize.sync({ force: true }) // Use `{ alter: true }` for production
+// Sync models with the database (altering tables to match models without data loss)
+sequelize.sync({ alter: true }) // Use `{ alter: true }` for non-destructive sync
   .then(() => {
     console.log('Database synchronized');
   })
@@ -23,7 +24,7 @@ sequelize.sync({ force: true }) // Use `{ alter: true }` for production
     console.error('Failed to synchronize database:', err);
   });
 
-// Start server
+// Start the server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

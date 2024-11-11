@@ -1,10 +1,86 @@
-const { Menu, MenuItem } = require('../config/Database');
+const { Menu, MenuItem, Page } = require('../config/Database');
 
-// Get all menus
+// Get all pages
+exports.getPages = async (req, res) => {
+  try {
+    const pages = await Page.findAll();
+    res.json(pages);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Get a single page by ID
+exports.getPage = async (req, res) => {
+  try {
+    const { pageId } = req.params;
+    const page = await Page.findByPk(pageId);
+    if (page) {
+      res.json(page);
+    } else {
+      res.status(404).json({ message: 'Page not found' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Add a new page
+exports.addPage = async (req, res) => {
+  try {
+    const { name, link, text, image } = req.body;
+    const page = await Page.create({ name, link, text, image });
+    res.status(201).json(page);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Update an existing page
+exports.updatePage = async (req, res) => {
+  try {
+    const { pageId } = req.params;
+    const { name, link, text, image } = req.body;
+    const page = await Page.findByPk(pageId);
+    if (page) {
+      page.set({ name, link, text, image });
+      await page.save();
+      res.json(page);
+    } else {
+      res.status(404).json({ message: 'Page not found' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Delete a page
+exports.deletePage = async (req, res) => {
+  try {
+    const { pageId } = req.params;
+    const page = await Page.findByPk(pageId);
+    if (page) {
+      await page.destroy();
+      res.status(204).send();
+    } else {
+      res.status(404).json({ message: 'Page not found' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Get all menus with associated menu items and their pages
 exports.getMenus = async (req, res) => {
   try {
     const menus = await Menu.findAll({
-      include: [{ model: MenuItem, as: 'menuItems' }]
+      include: [
+        { 
+          model: MenuItem, 
+          as: 'menuItems',
+          include: [{ model: Page, as: 'page' }]
+        }
+      ]
     });
     res.json(menus);
   } catch (err) {
@@ -12,110 +88,60 @@ exports.getMenus = async (req, res) => {
   }
 };
 
-// Create a new menu
-exports.createMenu = async (req, res) => {
-  try {
-    const { title, menuItems } = req.body;
-    const menu = await Menu.create({ title, menuItems }, {
-      include: [{ model: MenuItem, as: 'menuItems' }]
-    });
-    res.status(201).json(menu);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// Update a menu
-exports.updateMenu = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { title, menuItems } = req.body;
-    const menu = await Menu.findByPk(id, {
-      include: [{ model: MenuItem, as: 'menuItems' }]
-    });
-    if (menu) {
-      menu.title = title;
-      await menu.save();
-      if (menuItems) {
-        await Promise.all(menuItems.map(async (item) => {
-          const menuItem = await MenuItem.findByPk(item.id);
-          if (menuItem) {
-            menuItem.label = item.label;
-            await menuItem.save();
-          }
-        }));
-      }
-      res.json(menu);
-    } else {
-      res.status(404).send('Menu not found');
-    }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// Delete a menu
-exports.deleteMenu = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const menu = await Menu.findByPk(id);
-    if (menu) {
-      await menu.destroy();
-      res.status(204).send();
-    } else {
-      res.status(404).send('Menu not found');
-    }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// Get menu items for a specific menu
+// Get menu items for a specific menu, including associated pages
 exports.getMenuItems = async (req, res) => {
   try {
     const { menuId } = req.params;
     const menu = await Menu.findByPk(menuId, {
-      include: [{ model: MenuItem, as: 'menuItems' }]
+      include: [
+        { 
+          model: MenuItem, 
+          as: 'menuItems',
+          include: [{ model: Page, as: 'page' }]
+        }
+      ]
     });
     if (menu) {
       res.json(menu.menuItems);
     } else {
-      res.status(404).send('Menu not found');
+      res.status(404).json({ message: 'Menu not found' });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// Add a menu item to a specific menu
+// Add a menu item with an associated page to a specific menu
 exports.addMenuItem = async (req, res) => {
   try {
     const { menuId } = req.params;
-    const { label } = req.body;
+    const { label, pageId } = req.body;
     const menu = await Menu.findByPk(menuId);
-    if (menu) {
-      const menuItem = await MenuItem.create({ label, menuId });
+    const page = await Page.findByPk(pageId);
+    if (menu && page) {
+      const menuItem = await MenuItem.create({ label, menuId, pageId });
       res.status(201).json(menuItem);
     } else {
-      res.status(404).send('Menu not found');
+      res.status(404).json({ message: 'Menu or Page not found' });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// Update a menu item
+// Update a menu item, including its associated page
 exports.updateMenuItem = async (req, res) => {
   try {
     const { menuId, itemId } = req.params;
-    const { label } = req.body;
+    const { label, pageId } = req.body;
     const menuItem = await MenuItem.findByPk(itemId);
-    if (menuItem) {
-      menuItem.label = label;
+    const page = await Page.findByPk(pageId);
+    if (menuItem && page) {
+      menuItem.set({ label, pageId });
       await menuItem.save();
       res.json(menuItem);
     } else {
-      res.status(404).send('Menu item not found');
+      res.status(404).json({ message: 'Menu item or Page not found' });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -131,7 +157,7 @@ exports.deleteMenuItem = async (req, res) => {
       await menuItem.destroy();
       res.status(204).send();
     } else {
-      res.status(404).send('Menu item not found');
+      res.status(404).json({ message: 'Menu item not found' });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });

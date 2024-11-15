@@ -1,36 +1,25 @@
-const { MenuItem, Page } = require('../config/Database');
-
-// Service to fetch all menu items with their associated pages
-exports.getAllMenuItems = async () => {
+// Service function to add a new menu item
+exports.addMenuItem = async (label) => {
   try {
-    const menuItems = await MenuItem.findAll({
-      include: [{
-        model: Page,
-        as: 'page',
-        attributes: ['name', 'link'], // Include page details
-      }],
-    });
-    return menuItems;
+    const newMenuItem = await MenuItem.create({ label }); // Assuming MenuItem is your model
+    return newMenuItem;
   } catch (error) {
-    console.error('Error in getAllMenuItems service:', error);
-    throw error;
+    console.error('Error in addMenuItem service:', error);
+    throw new Error('Failed to add menu item');
   }
 };
 
-// Service to delete a menu item by ID
-exports.deleteMenuItem = async (id) => {
+// Service function to update a menu item by ID
+exports.updateMenuItem = async (id, label) => {
   try {
     const menuItem = await MenuItem.findByPk(id);
-
-    if (!menuItem) {
-      return false;  // Return false if the menu item is not found
-    }
-
-    // Delete the menu item
-    await menuItem.destroy();
-    return true;
+    if (!menuItem) return null;
+    
+    menuItem.label = label;
+    await menuItem.save();
+    return menuItem;
   } catch (error) {
-    console.error('Error in deleteMenuItem service:', error);
-    throw error;
+    console.error('Error in updateMenuItem service:', error);
+    throw new Error('Failed to update menu item');
   }
 };

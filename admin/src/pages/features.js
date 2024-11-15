@@ -9,6 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Layout from './../components/layout/layout';
+import axios from 'axios';
 import '../styles/feature.css';
 
 const columns = [
@@ -17,19 +18,33 @@ const columns = [
   { id: 'actions', label: 'Actions', minWidth: 100, align: 'center' },
 ];
 
-const rows = [
-  { id: 1, menuitem: 'Payslips', actions: 'Edit/Delete' },
-  { id: 2, menuitem: 'Information', actions: 'Edit/Delete' },
-  { id: 3, menuitem: 'Notifications', actions: 'Edit/Delete' },
-  { id: 4, menuitem: 'Census', actions: 'Edit/Delete' },
-  { id: 5, menuitem: 'Messaging', actions: 'Edit/Delete' },
-  { id: 6, menuitem: 'Children', actions: 'Edit/Delete' },
-  { id: 7, menuitem: 'Security', actions: 'Edit/Delete' },
-  { id: 8, menuitem: 'OTP', actions: 'Edit/Delete' },
-  { id: 9, menuitem: 'DGI', actions: 'Edit/Delete' },
-];
-
 export default function CenteredTable() {
+  const [menuItems, setMenuItems] = React.useState([]);
+
+  // Fetch menu items on component mount
+  React.useEffect(() => {
+    const fetchMenuItems = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/menuitems'); // Replace with your backend URL
+        setMenuItems(response.data);
+      } catch (error) {
+        console.error('Error fetching menu items:', error);
+      }
+    };
+
+    fetchMenuItems();
+  }, []);
+
+  // Handle delete action
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/menuitems/${id}`); // Replace with your backend URL
+      setMenuItems(menuItems.filter(item => item.id !== id));
+    } catch (error) {
+      console.error('Error deleting menu item:', error);
+    }
+  };
+
   return (
     <Layout>
       <div className="heading">
@@ -73,15 +88,15 @@ export default function CenteredTable() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                    <TableCell>{row.id}</TableCell>
-                    <TableCell>{row.menuitem}</TableCell>
+                {menuItems.map((item) => (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={item.id}>
+                    <TableCell>{item.id}</TableCell>
+                    <TableCell>{item.label}</TableCell>
                     <TableCell align="center">
                       <Button variant="contained" color="primary" size="small" style={{ marginRight: 8, backgroundColor: ' rgb(75, 75, 75)' }}>
                         Edit
                       </Button>
-                      <Button variant="contained" color="secondary" size="small" style={{ backgroundColor: 'red' }}>
+                      <Button variant="contained" color="secondary" size="small" style={{ backgroundColor: 'red' }} onClick={() => handleDelete(item.id)}>
                         Delete
                       </Button>
                     </TableCell>

@@ -13,10 +13,10 @@ import Security from './pages/Security';
 import Vision from './pages/Vision';
 import Mission from './pages/Mission';
 import Perspectives from './pages/Perspectives';
-import Aboutngomna from './pages/Aboutngomna';
 import Carousel from './pages/Carousel';
 import OTP from './pages/OTP'
 import DGI from './pages/DGI'
+import Boxes from './pages/Boxes';
 
 
 function App() {
@@ -24,8 +24,7 @@ function App() {
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home/>} />
-          <Route path="/contact" element={<Contact/>}/>
+          <Route path="/" element={<Home/>}/>
           <Route path="/download" element={<Download/>}/>
           <Route path="/payslips" element={<Payslips/>} />
           <Route path="/information" element={<Information/>}/>
@@ -37,7 +36,7 @@ function App() {
           <Route path="/mission" element={<Mission/>}/>
           <Route path="/vision" element={<Vision/>}/>
           <Route path="/perspectives" element={<Perspectives/>}/>
-          <Route path="/aboutngomna" element={<Aboutngomna/>}/>
+          <Route path="/boxes" element={<Boxes/>}/>
           <Route path="/carousel" element={<Carousel/>}/>
           <Route path="/OTP" element={<OTP/>}/>
           <Route path="/DGI" element={<DGI/>}/>

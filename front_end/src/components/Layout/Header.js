@@ -1,3 +1,4 @@
+//header.js
 import React, { useState, useEffect, useCallback } from 'react';
 import { AppBar, Box, Divider, Drawer, IconButton, Toolbar, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -17,7 +18,7 @@ const Header = () => {
 
   const fetchMenuItems = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:5000/menus/1/menu-items'); // Replace '1' with your menu ID
+      const response = await axios.get('http://localhost:5000/menus/1/menu-items');
       setMenuItems(response.data);
     } catch (error) {
       console.error('Failed to fetch menu items:', error);
@@ -73,10 +74,40 @@ const Header = () => {
           </Menu>
         </li>
         <li>
-          <a href="/#About_ngomna">About</a>
+        <Link aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenuClick}>
+            About
+          </Link>
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            {menuItems.map((item) => (
+              <MenuItem key={item.id} sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }} onClick={handleMenuClose}>
+                <Link className="menu-item-link" to={item.link}>{item.label}</Link>
+              </MenuItem>
+            ))}
+          </Menu>
         </li>
         <li>
-          <Link to="/contact">Contact</Link>
+        <Link aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenuClick}>
+            Contact
+          </Link>
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            {menuItems.map((item) => (
+              <MenuItem key={item.id} sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }} onClick={handleMenuClose}>
+                <Link className="menu-item-link" to={item.link}>{item.label}</Link>
+              </MenuItem>
+            ))}
+          </Menu>
         </li>
       </ul>
     </Box>
@@ -126,10 +157,42 @@ const Header = () => {
                 </Menu>
               </li>
               <li>
-                <a href="/#About_ngomna">About</a>
+              <Link aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenuClick} style={{ display: 'flex', alignItems: 'center' }}>
+                  About
+                  {Boolean(anchorEl) ? <ArrowDropUpIcon sx={{ color: "black" }} /> : <ArrowDropDownIcon sx={{ color: "black" }} />}
+                </Link>
+                <Menu
+                  id="simple-menu"
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={Boolean(anchorEl)}
+                  onClose={handleMenuClose}
+                >
+                  {menuItems.map((item) => (
+                    <MenuItem key={item.id} sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }} onClick={handleMenuClose}>
+                      <Link className="menu-item-link" to={item.link}>{item.label}</Link>
+                    </MenuItem>
+                  ))}
+                </Menu>
               </li>
               <li>
-                <Link to="/contact">Contact</Link>
+              <Link aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenuClick} style={{ display: 'flex', alignItems: 'center' }}>
+                  Contact
+                  {Boolean(anchorEl) ? <ArrowDropUpIcon sx={{ color: "black" }} /> : <ArrowDropDownIcon sx={{ color: "black" }} />}
+                </Link>
+                <Menu
+                  id="simple-menu"
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={Boolean(anchorEl)}
+                  onClose={handleMenuClose}
+                >
+                  {menuItems.map((item) => (
+                    <MenuItem key={item.id} sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }} onClick={handleMenuClose}>
+                      <Link className="menu-item-link" to={item.link}>{item.label}</Link>
+                    </MenuItem>
+                  ))}
+                </Menu>
               </li>
               <li>
                 <Link onClick={toggleLanguage}>{language === 'english' ? 'French' : 'English'}</Link>

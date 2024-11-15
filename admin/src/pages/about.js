@@ -18,24 +18,18 @@ const columns = [
 ];
 
 const rows = [
-  { id: 1, menuitem: 'Payslips', actions: 'Edit/Delete' },
-  { id: 2, menuitem: 'Information', actions: 'Edit/Delete' },
-  { id: 3, menuitem: 'Notifications', actions: 'Edit/Delete' },
-  { id: 4, menuitem: 'Census', actions: 'Edit/Delete' },
-  { id: 5, menuitem: 'Messaging', actions: 'Edit/Delete' },
-  { id: 6, menuitem: 'Children', actions: 'Edit/Delete' },
-  { id: 7, menuitem: 'Security', actions: 'Edit/Delete' },
-  { id: 8, menuitem: 'OTP', actions: 'Edit/Delete' },
-  { id: 9, menuitem: 'DGI', actions: 'Edit/Delete' },
+  { id: 1, menuitem: 'Mission', actions: 'Edit/Delete' },
+  { id: 2, menuitem: 'Vision', actions: 'Edit/Delete' },
+  { id: 3, menuitem: 'Perspectives', actions: 'Edit/Delete' },
 ];
 
 export default function CenteredTable() {
   return (
     <Layout>
       <div className="heading">
-        <h1>FEATURES MENU MANAGEMENT</h1> 
+        <h1>ABOUT MENU MANAGEMENT</h1> 
       </div>
-      <div className="add" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px', marginTop: '50px', paddingLeft: '180px' }}>
+      <div className="add" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px', marginTop: '50px', paddingLeft: '380px' }}>
         <h5>Add a Menu Item Here!</h5>
         <Button variant="contained" color="secondary" size="small" sx={{ backgroundColor: 'green' }}>
           Add
@@ -49,12 +43,12 @@ export default function CenteredTable() {
           alignItems: 'center',
           boxSizing: 'border-box',
           marginTop: '20px',
-          height: 'calc(100vh - 100px)',
+          padding: '16px',
         }}
       >   
-        <Paper sx={{ width: '100%', maxWidth: 1000, overflow: 'hidden', height: '100%' }}>
-          <TableContainer sx={{ maxHeight: '100%' }}>
-            <Table stickyHeader aria-label="sticky table">
+        <Paper sx={{ width: '100%', maxWidth: 600, overflow: 'hidden' }}>
+          <TableContainer>
+            <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
                   {columns.map((column) => (
@@ -63,7 +57,7 @@ export default function CenteredTable() {
                       align={column.align}
                       style={{
                         minWidth: column.minWidth,
-                        backgroundColor: ' rgb(223, 223, 223)',
+                        backgroundColor: 'rgb(223, 223, 223)',
                         fontWeight: 'bold'
                       }}
                     >
@@ -78,7 +72,7 @@ export default function CenteredTable() {
                     <TableCell>{row.id}</TableCell>
                     <TableCell>{row.menuitem}</TableCell>
                     <TableCell align="center">
-                      <Button variant="contained" color="primary" size="small" style={{ marginRight: 8, backgroundColor: ' rgb(75, 75, 75)' }}>
+                      <Button variant="contained" color="primary" size="small" style={{ marginRight: 8, backgroundColor: 'rgb(75, 75, 75)' }}>
                         Edit
                       </Button>
                       <Button variant="contained" color="secondary" size="small" style={{ backgroundColor: 'red' }}>

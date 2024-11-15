@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AppBar, Box, Divider, Drawer, IconButton, Toolbar } from '@mui/material';
+import { AppBar, Box, Divider, Drawer, IconButton, Toolbar, Menu, MenuItem} from '@mui/material';
 import { Link } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import logo from '../assets/mainlogo.png';
@@ -10,24 +10,63 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleDrawerToggle = () => {
     setMobileOpen(prevState => !prevState);
   };
 
+  const handleClickMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center', overflow: 'hidden' }}>
+    <Box sx={{ textAlign: 'center', overflow: 'hidden' }}>
       <Link to="/">
         <img src={logo} alt="Logo" style={{ height: '130px', width: '130px' }} />
       </Link>
       <Divider />
       <ul className="mobile-navigation">
-          <li><a href="/pages">Pages</a></li>
-          <li><a href="/features">Features</a></li>
-          <li><a href="/boxes">Boxes</a></li>
-          <li><a href="/carousel">Carousel</a></li>
-          <li><a href="/links">Links</a></li>
-          <li><a href="/comments">Comments</a></li>
+        <li><a href="/pages">pages</a></li>
+        <li>
+          <Link 
+            sx={{
+              fontSize: 19,
+              color: "white", 
+              "&:hover": { color: "black" },
+              textTransform: 'lowercase',
+            }} 
+            aria-controls="simple-menu" 
+            aria-haspopup="true" 
+            onClick={handleClickMenu}
+          >
+            menus
+          </Link>
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleCloseMenu}
+          >
+            <MenuItem onClick={handleCloseMenu} component={Link} to="/features">
+              Features
+            </MenuItem>
+            <MenuItem onClick={handleCloseMenu} component={Link} to="/about">
+              About
+            </MenuItem>
+            <MenuItem onClick={handleCloseMenu} component={Link} to="/contact">
+              Contact
+            </MenuItem>
+          </Menu>
+        </li>
+        <li><a href="/boxes">boxes</a></li>
+        <li><a href="/carousel">carousel</a></li>
+        <li><a href="/links">links</a></li>
+        <li><a href="/comments">comments</a></li>
       </ul>
     </Box>
   );
@@ -59,28 +98,29 @@ const Header = () => {
           </Link>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             <ul className="navigation-menu">
-            <Box sx={{ flexGrow: 1, textAlign: 'center'}}>
-              <h1 style={{ marginRight:'200px', color: 'white' }}>ADMIN DASHBOARD</h1>
-            </Box>
+              <Box sx={{ flexGrow: 1, textAlign: 'center' }}>
+                <h1 style={{ marginRight: '200px', color: 'white' }}>ADMIN DASHBOARD</h1>
+              </Box>
               <li>
                 <Link to="#">
-                  <PersonIcon/>
+                  <PersonIcon />
                 </Link>
               </li>
               <li>
                 <Link to="#">
-                  <NotificationsIcon/>
+                  <NotificationsIcon />
                 </Link>
               </li>
               <li>
                 <Link to="#">
-                  <SettingsIcon/>
+                  <SettingsIcon />
                 </Link>
               </li>
             </ul>
           </Box>
         </Toolbar>
       </AppBar>
+      
       <Box component="nav">
         <Drawer 
           variant="temporary" 
@@ -89,7 +129,7 @@ const Header = () => {
           sx={{
             "& .MuiDrawer-paper": { 
               boxSizing: "border-box", 
-              width: "120px", 
+              width: "180px", 
               bgcolor: "#444"
             } 
           }}
@@ -97,6 +137,7 @@ const Header = () => {
           {drawer}
         </Drawer>
       </Box>
+
       <Box sx={{ p: 2 }}></Box>
       <Toolbar />
     </Box>

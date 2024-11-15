@@ -4,7 +4,7 @@ import Layout from '../components/layout/layout';
 const Carousel = () => {
   return (
     <Layout>
-      Carousel page
+      Manage the carousel content here
     </Layout>
   )
 }

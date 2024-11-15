@@ -16,7 +16,7 @@ const Menu = sequelize.define('Menu', {
   }
 });
 
-// Define the Page model (page table) with removed text and image fields
+// Define the Page model (page table) 
 const Page = sequelize.define('Page', {
   name: {
     type: DataTypes.STRING,
@@ -27,16 +27,36 @@ const Page = sequelize.define('Page', {
     allowNull: false,
     unique: true
   }
-  // Removed text and image fields
+
 });
 
-// Define the MenuItem model (menu_item table) with removed link field
+// Define the MenuItem model (menuitem table) 
 const MenuItem = sequelize.define('MenuItem', {
   label: {
     type: DataTypes.STRING,
     allowNull: false
   }
-  // Removed link field
+
+});
+
+// Define the Links model (links table) 
+const Link = sequelize.define('Link', {
+  label: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  url: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  pageId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: Page,
+      key: 'id'
+    }
+  }
 });
 
 // Define the relationships
@@ -59,6 +79,15 @@ Page.hasMany(MenuItem, {
   as: 'menuItems'
 });
 
+Link.belongsTo(Page, {
+  foreignKey: 'pageId',
+  as: 'page'
+});
+Page.hasMany(Link, {
+  foreignKey: 'pageId',
+  as: 'links'
+});
+
 // Sync the models with the database and insert sample data
 sequelize.sync({ force: true }) // This will recreate the tables
   .then(async () => {
@@ -74,17 +103,54 @@ sequelize.sync({ force: true }) // This will recreate the tables
       { name: 'Children', link: '/children' },
       { name: 'Security', link: '/security' },
       { name: 'OTP', link: '/otp' },
-      { name: 'DGI', link: '/dgi' }
+      { name: 'DGI', link: '/dgi' },
+      { name: 'Mission', link: '/mission' },
+      { name: 'Vision', link: '/vision' },
+      { name: 'Perspectives', link: '/perspectives' },
+      { name: 'WhatsApp', link: '/whatsapp' },
+      { name: 'E-mail', link: '/email' },
+      { name: 'Facebook', link: '/facebook' }
     ]);
 
     console.log('Pages created:', pages);
 
-    // Create a menu called 'features'
+    // Create links
+    const links = await Link.bulkCreate([
+      { label: 'payslips', url: '/payslips', pageId: pages[0].id },
+      { label: 'information', url: '/information', pageId: pages[1].id },
+      { label: 'notifications', url: '/notifications', pageId: pages[2].id },
+      { label: 'census', url: '/census', pageId: pages[3].id },
+      { label: 'messaging', url: '/messaging', pageId: pages[4].id },
+      { label: 'children', url: '/children', pageId: pages[5].id },
+      { label: 'security', url: '/security', pageId: pages[6].id },
+      { label: 'OTP', url: '/otp', pageId: pages[7].id },
+      { label: 'DGI', url: '/dgi', pageId: pages[8].id },
+      { label: 'mission', url: '/mission', pageId: pages[9].id },
+      { label: 'vision', url: '/vision', pageId: pages[10].id },
+      { label: 'perspectives', url: '/perspectives', pageId: pages[11].id },
+      { label: 'whatsapp', url: '/whatsapp', pageId: pages[12].id  },
+      { label: 'e-mail', url: '/email', pageId: pages[13].id  },
+      { label: 'facebook', url: '/facebook', pageId: pages[14].id  }
+    ]);
+
+    console.log('Links created:', links);
+
+    // Create menus 'features', 'about', and 'contact'
     const featuresMenu = await Menu.create({
       title: 'features'
     });
 
-    // Create menu items for the features menu (removed link field)
+    const aboutMenu = await Menu.create({
+      title: 'about'
+    });
+
+    const contactMenu = await Menu.create({
+      title: 'contact'
+    });
+
+    console.log('Menus created:', { featuresMenu, aboutMenu, contactMenu });
+
+    // Create menu items for the features menu
     const menuItems = await MenuItem.bulkCreate([
       { label: 'payslips', menuId: featuresMenu.id, pageId: pages[0].id },
       { label: 'information', menuId: featuresMenu.id, pageId: pages[1].id },
@@ -94,7 +160,13 @@ sequelize.sync({ force: true }) // This will recreate the tables
       { label: 'children', menuId: featuresMenu.id, pageId: pages[5].id },
       { label: 'security', menuId: featuresMenu.id, pageId: pages[6].id },
       { label: 'OTP', menuId: featuresMenu.id, pageId: pages[7].id },
-      { label: 'DGI', menuId: featuresMenu.id, pageId: pages[8].id }
+      { label: 'DGI', menuId: featuresMenu.id, pageId: pages[8].id },
+      { label: 'mission', menuId: aboutMenu.id, pageId: pages[9].id },
+      { label: 'vision', menuId: aboutMenu.id, pageId: pages[10].id },
+      { label: 'perspectives', menuId: aboutMenu.id, pageId: pages[11].id },
+      { label: 'whatsapp', menuId: contactMenu.id, pageId: pages[11].id },
+      { label: 'e-mail', menuId: contactMenu.id, pageId: pages[11].id },
+      { label: 'facebook', menuId: contactMenu.id, pageId: pages[11].id },
     ]);
 
     console.log('Menu with menu items created:', featuresMenu.toJSON());
@@ -104,4 +176,4 @@ sequelize.sync({ force: true }) // This will recreate the tables
     console.error('Unable to create tables:', err);
   });
 
-module.exports = { sequelize, Menu, MenuItem, Page };
+module.exports = { sequelize, Menu, MenuItem, Page, Link };

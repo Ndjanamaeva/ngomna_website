@@ -4,7 +4,7 @@ import Layout from './../components/layout/layout';
 const Pages = () => {
   return (
     <Layout>
-      Pages page
+      Manage the pages content here
     </Layout>
   )
 }

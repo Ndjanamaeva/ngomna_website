@@ -9,6 +9,8 @@ import Boxes from './pages/boxes.js';
 import Pages from './pages/pages';
 import Register from './pages/register';
 import Links from './pages/links';
+import Contact from './pages/contact.js';
+import About from './pages/about.js';
 
 
 function App() {
@@ -25,6 +27,8 @@ function App() {
           <Route path="/carousel" element={<Carousel/>}/>
           <Route path="/comments" element={<Comments/>}/>
           <Route path="/links" element={<Links/>}/>
+          <Route path="/about" element={<About/>}/>
+          <Route path="/contact" element={<Contact/>}/>
           <Route path="/home" element={<Home/>}/>
           <Route path="*" element={<Pagenotfound/>}/>
         </Routes>

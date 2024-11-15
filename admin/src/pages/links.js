@@ -1,12 +1,100 @@
-import React from 'react';
-import Layout from '../components/layout/layout';
+import * as React from 'react';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Layout from './../components/layout/layout';
+import '../styles/feature.css';
 
-const Links = () => {
+const columns = [
+  { id: 'id', label: 'ID', minWidth: 50 },
+  { id: 'link', label: 'Link', minWidth: 150 },
+  { id: 'actions', label: 'Actions', minWidth: 100, align: 'center' },
+];
+
+const rows = [
+  { id: 1, link: 'Payslips', actions: 'Edit/Delete' },
+  { id: 2, link: 'Information', actions: 'Edit/Delete' },
+  { id: 3, link: 'Notifications', actions: 'Edit/Delete' },
+  { id: 4, link: 'Census', actions: 'Edit/Delete' },
+  { id: 5, link: 'Messaging', actions: 'Edit/Delete' },
+  { id: 6, link: 'Children', actions: 'Edit/Delete' },
+  { id: 7, link: 'Security', actions: 'Edit/Delete' },
+  { id: 8, link: 'OTP', actions: 'Edit/Delete' },
+  { id: 9, link: 'DGI', actions: 'Edit/Delete' },
+  { id: 10, link: 'Mission', actions: 'Edit/Delete' },
+  { id: 11, link: 'Vision', actions: 'Edit/Delete' },
+  { id: 12, link: 'Perspectives', actions: 'Edit/Delete' },
+];
+
+export default function CenteredTable() {
   return (
     <Layout>
-      Links page
+      <div className="heading">
+        <h1>LINKS MANAGEMENT</h1> 
+      </div>
+      <div className="add" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px', marginTop: '50px', paddingLeft: '180px' }}>
+        <h5>Add a Link Here!</h5>
+        <Button variant="contained" color="secondary" size="small" sx={{ backgroundColor: 'green' }}>
+          Add
+        </Button>
+      </div>
+      
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          boxSizing: 'border-box',
+          marginTop: '20px',
+          height: 'calc(100vh - 100px)',
+        }}
+      >   
+        <Paper sx={{ width: '100%', maxWidth: 1000, overflow: 'hidden', height: '100%' }}>
+          <TableContainer sx={{ maxHeight: '100%' }}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{
+                        minWidth: column.minWidth,
+                        backgroundColor: ' rgb(223, 223, 223)',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row) => (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                    <TableCell>{row.id}</TableCell>
+                    <TableCell>{row.link}</TableCell>
+                    <TableCell align="center">
+                      <Button variant="contained" color="primary" size="small" style={{ marginRight: 8, backgroundColor: ' rgb(75, 75, 75)' }}>
+                        Edit
+                      </Button>
+                      <Button variant="contained" color="secondary" size="small" style={{ backgroundColor: 'red' }}>
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Box>
     </Layout>
-  )
+  );
 }
-
-export default Links;

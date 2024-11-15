@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from './../components/Layout/Layout';
 import HeroSection from '../pages/HeroSection';
-import Aboutngomna from '../pages/Aboutngomna';
+import Aboutngomna from './Boxes';
 import Carousel from '../pages/Carousel'
 import FAQs from '../pages/FAQs'
 import { Divider } from '@mui/material';

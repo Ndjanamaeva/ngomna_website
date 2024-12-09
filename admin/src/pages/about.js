@@ -1,3 +1,5 @@
+//about.js
+
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -9,6 +11,8 @@ import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Layout from './../components/layout/layout';
+import axios from 'axios';
+import { TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import '../styles/feature.css';
 
 const columns = [
@@ -17,13 +21,79 @@ const columns = [
   { id: 'actions', label: 'Actions', minWidth: 100, align: 'center' },
 ];
 
-const rows = [
-  { id: 1, menuitem: 'Mission', actions: 'Edit/Delete' },
-  { id: 2, menuitem: 'Vision', actions: 'Edit/Delete' },
-  { id: 3, menuitem: 'Perspectives', actions: 'Edit/Delete' },
-];
-
 export default function CenteredTable() {
+  const [menuItems, setMenuItems] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
+  const [formData, setFormData] = React.useState({ id: '', label: '' });
+  const [editMode, setEditMode] = React.useState(false);
+
+  // Fetch menu items on component mount
+  React.useEffect(() => {
+    const fetchMenuItems = async () => {
+      try {
+        // Modify URL to fetch from 'about' menu
+        const response = await axios.get('http://localhost:5000/api/menuitems/2');
+        setMenuItems(response.data);
+      } catch (error) {
+        console.error('Error fetching menu items:', error);
+      }
+    };
+
+    fetchMenuItems();
+  }, []);
+
+  // Handle delete action
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/menuitems/${id}`);
+      setMenuItems(menuItems.filter(item => item.id !== id));
+    } catch (error) {
+      console.error('Error deleting menu item:', error);
+    }
+  };
+
+  // Handle add or edit form submit
+  const handleSubmit = async () => {
+    if (editMode) {
+      try {
+        // Edit request
+        await axios.put(`http://localhost:5000/api/menuitems/${formData.id}`, { label: formData.label });
+
+        // Update state to reflect the change
+        setMenuItems(menuItems.map(item => (item.id === formData.id ? { ...item, label: formData.label } : item)));
+      } catch (error) {
+        console.error('Error updating menu item:', error);
+      }
+    } else {
+      try {
+        // Add request
+        const response = await axios.post('http://localhost:5000/api/menuitems/2', { label: formData.label });
+
+        // Update state to reflect the new item
+        setMenuItems([...menuItems, response.data]);
+      } catch (error) {
+        console.error('Error adding menu item:', error);
+      }
+    }
+
+    // Close form and reset state
+    setOpen(false);
+    setFormData({ id: '', label: '' });
+    setEditMode(false);
+  };
+
+  // Handle form open for add or edit
+  const handleOpenForm = (item = null) => {
+    if (item) {
+      setEditMode(true);
+      setFormData({ id: item.id, label: item.label });
+    } else {
+      setEditMode(false);
+      setFormData({ id: '', label: '' });
+    }
+    setOpen(true);
+  };
+
   return (
     <Layout>
       <div className="heading">
@@ -31,7 +101,7 @@ export default function CenteredTable() {
       </div>
       <div className="add" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px', marginTop: '50px', paddingLeft: '380px' }}>
         <h5>Add a Menu Item Here!</h5>
-        <Button variant="contained" color="secondary" size="small" sx={{ backgroundColor: 'green' }}>
+        <Button variant="contained" color="secondary" size="small" sx={{ backgroundColor: 'green' }} onClick={() => handleOpenForm()}>
           Add
         </Button>
       </div>
@@ -67,15 +137,15 @@ export default function CenteredTable() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                    <TableCell>{row.id}</TableCell>
-                    <TableCell>{row.menuitem}</TableCell>
+                {menuItems.map((item) => (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={item.id}>
+                    <TableCell>{item.id}</TableCell>
+                    <TableCell>{item.label}</TableCell>
                     <TableCell align="center">
-                      <Button variant="contained" color="primary" size="small" style={{ marginRight: 8, backgroundColor: 'rgb(75, 75, 75)' }}>
+                      <Button variant="contained" color="primary" size="small" style={{ marginRight: 8, backgroundColor: 'rgb(75, 75, 75)' }} onClick={() => handleOpenForm(item)}>
                         Edit
                       </Button>
-                      <Button variant="contained" color="secondary" size="small" style={{ backgroundColor: 'red' }}>
+                      <Button variant="contained" color="secondary" size="small" style={{ backgroundColor: 'red' }} onClick={() => handleDelete(item.id)}>
                         Delete
                       </Button>
                     </TableCell>
@@ -86,6 +156,31 @@ export default function CenteredTable() {
           </TableContainer>
         </Paper>
       </Box>
+
+      {/* Add/Edit Dialog */}
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle>{editMode ? 'Edit Menu Item' : 'Add Menu Item'}</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Menu Item Label"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={formData.label}
+            onChange={(e) => setFormData({ ...formData, label: e.target.value })}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} color="primary">
+            {editMode ? 'Save' : 'Add'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Layout>
   );
 }

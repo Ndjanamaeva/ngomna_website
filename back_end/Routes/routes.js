@@ -1,3 +1,5 @@
+//routes.js
+
 const express = require('express');
 const router = express.Router();
 const menuController = require('../controllers/controller');
@@ -5,17 +7,11 @@ const linkController = require('../controllers/controller'); // Assuming you hav
 
 // Menu Items Routes
 
-// Define route to get all menu items
-router.get('/api/menuitems', menuController.getAllMenuItems);
-
-// Define route to add a new menu item
-router.post('/api/menuitems', menuController.addMenuItem);
-
-// Define route to delete a menu item by ID
-router.delete('/api/menuitems/:id', menuController.deleteMenuItem);
-
-// Define route to edit a menu item by ID
-router.put('/api/menuitems/:id', menuController.editMenuItem);
+// Routes for menu items for a specific menu
+router.get('/api/menuitems/:menuId', menuController.getAllMenuItemsForMenu);  // Get all items for a specific menu
+router.post('/api/menuitems/:menuId', menuController.addMenuItemToMenu);      // Add a new menu item to a specific menu
+router.put('/api/menuitems/:id', menuController.editMenuItem);               // Edit a menu item by ID
+router.delete('/api/menuitems/:id', menuController.deleteMenuItem); 
 
 // Links Routes
 

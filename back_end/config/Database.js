@@ -1,3 +1,5 @@
+//database.js
+
 const { Sequelize, DataTypes } = require('sequelize');
 
 // Set up Sequelize and PostgreSQL
@@ -27,7 +29,6 @@ const Page = sequelize.define('Page', {
     allowNull: false,
     unique: true
   }
-
 });
 
 // Define the MenuItem model (menuitem table) 
@@ -36,7 +37,6 @@ const MenuItem = sequelize.define('MenuItem', {
     type: DataTypes.STRING,
     allowNull: false
   }
-
 });
 
 // Define the Links model (links table) 
@@ -164,9 +164,9 @@ sequelize.sync({ force: true }) // This will recreate the tables
       { label: 'mission', menuId: aboutMenu.id, pageId: pages[9].id },
       { label: 'vision', menuId: aboutMenu.id, pageId: pages[10].id },
       { label: 'perspectives', menuId: aboutMenu.id, pageId: pages[11].id },
-      { label: 'whatsapp', menuId: contactMenu.id, pageId: pages[11].id },
-      { label: 'e-mail', menuId: contactMenu.id, pageId: pages[11].id },
-      { label: 'facebook', menuId: contactMenu.id, pageId: pages[11].id },
+      { label: 'whatsapp', menuId: contactMenu.id, pageId: pages[12].id },
+      { label: 'e-mail', menuId: contactMenu.id, pageId: pages[13].id },
+      { label: 'facebook', menuId: contactMenu.id, pageId: pages[14].id },
     ]);
 
     console.log('Menu with menu items created:', featuresMenu.toJSON());

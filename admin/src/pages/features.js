@@ -31,7 +31,7 @@ export default function CenteredTable() {
   React.useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/menuitems');
+        const response = await axios.get('http://localhost:5000/api/menuitems/1');
         setMenuItems(response.data);
       } catch (error) {
         console.error('Error fetching menu items:', error);
@@ -66,7 +66,7 @@ export default function CenteredTable() {
     } else {
       try {
         // Add request
-        const response = await axios.post('http://localhost:5000/api/menuitems', { label: formData.label });
+        const response = await axios.post('http://localhost:5000/api/menuitems/1', { label: formData.label });
 
         // Update state to reflect the new item
         setMenuItems([...menuItems, response.data]);

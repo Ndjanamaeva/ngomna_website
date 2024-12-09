@@ -1,42 +1,34 @@
+//controllers.js
+
 const menuService = require('../services/service');
 const linkService = require('../services/service'); // Assuming the link service functions are defined
 
-// Get all menu items
-exports.getAllMenuItems = async (req, res) => {
+
+// Get all menu items for a specific menu
+exports.getAllMenuItemsForMenu = async (req, res) => {
   try {
-    const menuItems = await menuService.getAllMenuItems();
+    const { menuId } = req.params;
+    const menuItems = await menuService.getAllMenuItemsForMenu(menuId);
     res.json(menuItems);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching menu items', error });
+    res.status(500).json({ message: 'Error fetching menu items for menu', error });
   }
 };
 
-// Add a new menu item
-exports.addMenuItem = async (req, res) => {
+// Add a new menu item for a specific menu
+exports.addMenuItemToMenu = async (req, res) => {
   try {
-    const { label } = req.body;
+    const { menuId } = req.params;
+    const { label, pageId } = req.body;
 
-    // Validate that label is provided and is a string
-    if (!label || typeof label !== 'string') {
-      return res.status(400).json({ message: 'Invalid label. Label must be a non-empty string.' });
+    if (!label || !pageId) {
+      return res.status(400).json({ message: 'Label and pageId are required' });
     }
 
-    const newMenuItem = await menuService.addMenuItem(label);
+    const newMenuItem = await menuService.addMenuItemToMenu(menuId, label, pageId);
     res.status(201).json(newMenuItem);
   } catch (error) {
-    res.status(500).json({ message: 'Error adding menu item', error: error.message });
-  }
-};
-
-
-// Delete a menu item
-exports.deleteMenuItem = async (req, res) => {
-  try {
-    const { id } = req.params;
-    await menuService.deleteMenuItem(id);
-    res.status(204).send();
-  } catch (error) {
-    res.status(500).json({ message: 'Error deleting menu item', error });
+    res.status(500).json({ message: 'Error adding menu item to menu', error });
   }
 };
 
@@ -44,9 +36,9 @@ exports.deleteMenuItem = async (req, res) => {
 exports.editMenuItem = async (req, res) => {
   try {
     const { id } = req.params;
-    const { label } = req.body;
+    const { label, pageId } = req.body;
 
-    const updatedMenuItem = await menuService.editMenuItem(id, { label });
+    const updatedMenuItem = await menuService.editMenuItem(id, { label, pageId });
     if (!updatedMenuItem) {
       return res.status(404).json({ message: 'Menu item not found' });
     }
@@ -54,6 +46,17 @@ exports.editMenuItem = async (req, res) => {
     res.json(updatedMenuItem);
   } catch (error) {
     res.status(500).json({ message: 'Error updating menu item', error });
+  }
+};
+
+// Delete a menu item by ID
+exports.deleteMenuItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await menuService.deleteMenuItem(id);
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting menu item', error });
   }
 };
 

@@ -22,7 +22,7 @@ const columns = [
 export default function CenteredTable() {
   const [links, setLinks] = React.useState([]);
   const [open, setOpen] = React.useState(false);
-  const [formData, setFormData] = React.useState({ id: '', label: '' });
+  const [formData, setFormData] = React.useState({ id: '', label: '', url: '' });
   const [editMode, setEditMode] = React.useState(false);
 
   // Fetch links on component mount
@@ -49,39 +49,30 @@ export default function CenteredTable() {
     }
   };
 
-  // Handle add or edit form submit
+  // Handle form submission for adding/editing links
   const handleSubmit = async () => {
-    if (!formData.label.trim()) {
-      alert('Link label is required');
+    if (!formData.label.trim() || !formData.url.trim()) {
+      alert('Label and URL are required');
       return;
     }
 
     try {
       if (editMode) {
         // Edit request
-        await axios.put(`http://localhost:5000/api/links/${formData.id}`, {
-          label: formData.label,
-        });
-        setLinks(
-          links.map((item) =>
-            item.id === formData.id ? { ...item, label: formData.label } : item
-          )
-        );
+        await axios.put(`http://localhost:5000/api/links/${formData.id}`, { label: formData.label, url: formData.url });
+        setLinks(links.map(item => (item.id === formData.id ? { ...item, label: formData.label, url: formData.url } : item)));
       } else {
         // Add request
-        const response = await axios.post('http://localhost:5000/api/links', {
-          label: formData.label,
-        });
+        const response = await axios.post(`http://localhost:5000/api/links`, { label: formData.label, url: formData.url });
         setLinks([...links, response.data]);
       }
+      setOpen(false);
+      setFormData({ id: '', label: '', url: '' });
+      setEditMode(false);
     } catch (error) {
-      console.error('Error saving link:', error.response?.data || error.message);
+      console.error(editMode ? 'Error updating link' : 'Error adding link', error);
+      alert('An error occurred. Please try again.');
     }
-
-    // Close the dialog and reset form
-    setOpen(false);
-    setFormData({ id: '', label: '' });
-    setEditMode(false);
   };
 
   // Handle form open for add or edit
@@ -89,10 +80,10 @@ export default function CenteredTable() {
     setOpen(true);
     if (item) {
       setEditMode(true);
-      setFormData({ id: item.id, label: item.label });
+      setFormData({ id: item.id, label: item.label, url: item.url });
     } else {
       setEditMode(false);
-      setFormData({ id: '', label: '' });
+      setFormData({ id: '', label: '', url: '' });
     }
   };
 
@@ -200,6 +191,15 @@ export default function CenteredTable() {
             variant="outlined"
             value={formData.label}
             onChange={(e) => setFormData({ ...formData, label: e.target.value })}
+          />
+          <TextField
+            margin="dense"
+            label="Link URL"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={formData.url}
+            onChange={(e) => setFormData({ ...formData, url: e.target.value })}
           />
         </DialogContent>
         <DialogActions>

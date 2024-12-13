@@ -54,17 +54,13 @@ exports.deleteMenuItem = async (id) => {
   }
 };
 
-// Service function to add a new link
-exports.addLink = async (label) => {
+// Add a new link
+exports.addLink = async (label, url) => {
   try {
-    // Ensure label is a string
-    if (typeof label !== 'string') {
-      throw new Error('Label must be a string');
-    }
-    const newLink = await MenuItem.create({ label });
+    const newLink = await Link.create({ label, url});
     return newLink;
   } catch (error) {
-    console.error('Error in addLink service:', error);
+    console.error('Error adding link:', error);
     throw new Error('Failed to add link');
   }
 };

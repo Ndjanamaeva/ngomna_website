@@ -71,23 +71,23 @@ exports.getAllLinks = async (req, res) => {
   }
 };
 
-
-// Add a new link
+// Add a new link to a page
 exports.addLink = async (req, res) => {
   try {
-    const { label } = req.body;
 
-    // Validate that label is provided and is a string
-    if (!label || typeof label !== 'string') {
-      return res.status(400).json({ message: 'Invalid label. Label must be a non-empty string.' });
+    const { label, url } = req.body;
+
+    if (!label || !url) {
+      return res.status(400).json({ message: 'Label and URL are required' });
     }
 
-    const newLink = await linkService.addLink(label);
+    const newLink = await linkService.addLink(label, url);
     res.status(201).json(newLink);
   } catch (error) {
-    res.status(500).json({ message: 'Error adding link', error: error.message });
+    res.status(500).json({ message: 'Error adding link', error });
   }
 };
+
 
 // Delete a link
 exports.deleteLink = async (req, res) => {

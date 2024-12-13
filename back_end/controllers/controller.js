@@ -21,16 +21,17 @@ exports.addMenuItemToMenu = async (req, res) => {
     const { menuId } = req.params;
     const { label, pageId } = req.body;
 
-    if (!label || !pageId) {
-      return res.status(400).json({ message: 'Label and pageId are required' });
+    if (!label) {
+      return res.status(400).json({ message: 'Label is required' });
     }
 
-    const newMenuItem = await menuService.addMenuItemToMenu(menuId, label, pageId);
+    const newMenuItem = await menuService.addMenuItemToMenu(menuId, label, pageId || null);
     res.status(201).json(newMenuItem);
   } catch (error) {
     res.status(500).json({ message: 'Error adding menu item to menu', error });
   }
 };
+
 
 // Edit a menu item by ID
 exports.editMenuItem = async (req, res) => {

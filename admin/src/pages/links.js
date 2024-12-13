@@ -64,7 +64,9 @@ export default function CenteredTable() {
       } else {
         // Add request
         const response = await axios.post(`http://localhost:5000/api/links`, { label: formData.label, url: formData.url });
-        setLinks([...links, response.data]);
+        // Add front-end ID, incrementing from the current length of links array
+        const newLink = { ...response.data, id: links.length + 1 }; 
+        setLinks([...links, newLink]);
       }
       setOpen(false);
       setFormData({ id: '', label: '', url: '' });

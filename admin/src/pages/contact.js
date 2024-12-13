@@ -1,5 +1,3 @@
-//contact.js
-
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -15,6 +13,7 @@ import axios from 'axios';
 import { TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import '../styles/feature.css';
 
+// Add 'ID' column to the table columns
 const columns = [
   { id: 'id', label: 'ID', minWidth: 50 },
   { id: 'menuitem', label: 'Menu Item', minWidth: 150 },
@@ -31,7 +30,6 @@ export default function CenteredTable() {
   React.useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        // Modify URL to fetch from 'contact' menu
         const response = await axios.get('http://localhost:5000/api/menuitems/3');
         setMenuItems(response.data);
       } catch (error) {
@@ -53,31 +51,30 @@ export default function CenteredTable() {
   };
 
   // Handle form submission for adding/editing menu items
-const handleSubmit = async () => {
-  if (!formData.label.trim()) {
-    alert('Label is required');
-    return;
-  }
-
-  try {
-    if (editMode) {
-      // Edit request
-      await axios.put(`http://localhost:5000/api/menuitems/${formData.id}`, { label: formData.label });
-      setMenuItems(menuItems.map(item => (item.id === formData.id ? { ...item, label: formData.label } : item)));
-    } else {
-      // Add request
-      const response = await axios.post(`http://localhost:5000/api/menuitems/3`, { label: formData.label, pageId: null });
-      setMenuItems([...menuItems, response.data]);
+  const handleSubmit = async () => {
+    if (!formData.label.trim()) {
+      alert('Label is required');
+      return;
     }
-    setOpen(false);
-    setFormData({ id: '', label: '' });
-    setEditMode(false);
-  } catch (error) {
-    console.error(editMode ? 'Error updating menu item' : 'Error adding menu item', error);
-    alert('An error occurred. Please try again.');
-  }
-};
 
+    try {
+      if (editMode) {
+        // Edit request
+        await axios.put(`http://localhost:5000/api/menuitems/${formData.id}`, { label: formData.label });
+        setMenuItems(menuItems.map(item => (item.id === formData.id ? { ...item, label: formData.label } : item)));
+      } else {
+        // Add request
+        const response = await axios.post(`http://localhost:5000/api/menuitems/3`, { label: formData.label, pageId: null });
+        setMenuItems([...menuItems, response.data]);
+      }
+      setOpen(false);
+      setFormData({ id: '', label: '' });
+      setEditMode(false);
+    } catch (error) {
+      console.error(editMode ? 'Error updating menu item' : 'Error adding menu item', error);
+      alert('An error occurred. Please try again.');
+    }
+  };
 
   // Handle form open for add or edit
   const handleOpenForm = (item = null) => {
@@ -134,9 +131,10 @@ const handleSubmit = async () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {menuItems.map((item) => (
+                {menuItems.map((item, index) => (
                   <TableRow hover role="checkbox" tabIndex={-1} key={item.id}>
-                    <TableCell>{item.id}</TableCell>
+                    {/* Display auto-incremented ID based on index + 1 */}
+                    <TableCell>{index + 1}</TableCell>
                     <TableCell>{item.label}</TableCell>
                     <TableCell align="center">
                       <Button variant="contained" color="primary" size="small" style={{ marginRight: 8, backgroundColor: 'rgb(75, 75, 75)' }} onClick={() => handleOpenForm(item)}>

@@ -52,35 +52,32 @@ export default function CenteredTable() {
     }
   };
 
-  // Handle add or edit form submit
-  const handleSubmit = async () => {
+  // Handle form submission for adding/editing menu items
+const handleSubmit = async () => {
+  if (!formData.label.trim()) {
+    alert('Label is required');
+    return;
+  }
+
+  try {
     if (editMode) {
-      try {
-        // Edit request
-        await axios.put(`http://localhost:5000/api/menuitems/${formData.id}`, { label: formData.label });
-
-        // Update state to reflect the change
-        setMenuItems(menuItems.map(item => (item.id === formData.id ? { ...item, label: formData.label } : item)));
-      } catch (error) {
-        console.error('Error updating menu item:', error);
-      }
+      // Edit request
+      await axios.put(`http://localhost:5000/api/menuitems/${formData.id}`, { label: formData.label });
+      setMenuItems(menuItems.map(item => (item.id === formData.id ? { ...item, label: formData.label } : item)));
     } else {
-      try {
-        // Add request
-        const response = await axios.post('http://localhost:5000/api/menuitems/3', { label: formData.label });
-
-        // Update state to reflect the new item
-        setMenuItems([...menuItems, response.data]);
-      } catch (error) {
-        console.error('Error adding menu item:', error);
-      }
+      // Add request
+      const response = await axios.post(`http://localhost:5000/api/menuitems/3`, { label: formData.label, pageId: null });
+      setMenuItems([...menuItems, response.data]);
     }
-
-    // Close form and reset state
     setOpen(false);
     setFormData({ id: '', label: '' });
     setEditMode(false);
-  };
+  } catch (error) {
+    console.error(editMode ? 'Error updating menu item' : 'Error adding menu item', error);
+    alert('An error occurred. Please try again.');
+  }
+};
+
 
   // Handle form open for add or edit
   const handleOpenForm = (item = null) => {

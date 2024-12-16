@@ -49,35 +49,36 @@ export default function CenteredTable() {
     }
   };
 
-  // Handle form submission for adding/editing menu items
-  const handleSubmit = async () => {
-    if (!formData.label.trim()) {
-      alert('Label is required');
-      return;
+  // React component code
+const handleSubmit = async () => {
+  if (!formData.label.trim()) {
+    alert('Label is required');
+    return;
+  }
+
+  try {
+    let newMenuItem = { label: formData.label };
+    
+    if (editMode) {
+      // Edit request
+      await axios.put(`http://localhost:5000/api/menuitems/${formData.id}`, { label: formData.label });
+      setMenuItems(menuItems.map(item => (item.id === formData.id ? { ...item, label: formData.label } : item)));
+    } else {
+      // Add request - This will create a new page automatically
+      const response = await axios.post(`http://localhost:5000/api/menuitems/1`, newMenuItem);
+      const newItem = { ...response.data, id: menuItems.length + 1 }; // Assuming backend response includes the new item
+      setMenuItems([...menuItems, newItem]);
     }
 
-    try {
-      let newMenuItem = { label: formData.label, pageId: formData.pageId };
-      
-      if (editMode) {
-        // Edit request
-        await axios.put(`http://localhost:5000/api/menuitems/${formData.id}`, { label: formData.label });
-        setMenuItems(menuItems.map(item => (item.id === formData.id ? { ...item, label: formData.label } : item)));
-      } else {
-        // Add request
-        const response = await axios.post(`http://localhost:5000/api/menuitems/1`, newMenuItem);
-        const newItem = { ...response.data, id: menuItems.length + 1 }; // Add front-end ID starting from 1
-        setMenuItems([...menuItems, newItem]);
-      }
+    setOpen(false);
+    setFormData({ id: '', label: '' });
+    setEditMode(false);
+  } catch (error) {
+    console.error(editMode ? 'Error updating menu item' : 'Error adding menu item', error);
+    alert('An error occurred. Please try again.');
+  }
+};
 
-      setOpen(false);
-      setFormData({ id: '', label: '' });
-      setEditMode(false);
-    } catch (error) {
-      console.error(editMode ? 'Error updating menu item' : 'Error adding menu item', error);
-      alert('An error occurred. Please try again.');
-    }
-  };
 
   // Handle form open for add or edit
   const handleOpenForm = (item = null) => {

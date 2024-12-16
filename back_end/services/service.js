@@ -13,29 +13,29 @@ exports.getAllMenuItemsForMenu = async (menuId) => {
   }
 };
 
+
 // Add a new menu item for a specific menu
-exports.addMenuItemToMenu = async (menuId, label, pageId) => {
+exports.addMenuItemToMenu = async (menuId, label) => {
   try {
-    let page;
-    
-    // Check if pageId is provided
-    if (pageId) {
-      page = await Page.findByPk(pageId);
-    }
-    
-    if (!page) {
-      // If no page is found or no pageId is provided, create a new page
-      page = await Page.create({
-        name: label,
-        url: `/pages/${label.toLowerCase()}`,  // Example URL pattern
-      });
-    }
+    // Create a new page if no pageId is provided
+    const page = await Page.create({
+      name: label,
+      url: `/${label.toLowerCase()}`,  // Example URL pattern
+    });
 
-    // Create MenuItem
-    const newMenuItem = await MenuItem.create({ label, menuId, pageId: page.id });
+    // Create a new menu item and associate it with the created page
+    const newMenuItem = await MenuItem.create({
+      label,
+      menuId,
+      pageId: page.id
+    });
 
-    // Create Link for the Page
-    await Link.create({ label, url: page.url, pageId: page.id });
+    // Create a new link for the page
+    await Link.create({
+      label,
+      url: page.url,
+      pageId: page.id
+    });
 
     return newMenuItem;
   } catch (error) {
@@ -43,8 +43,6 @@ exports.addMenuItemToMenu = async (menuId, label, pageId) => {
     throw new Error('Failed to add menu item');
   }
 };
-
-
 
 // Edit (update) a menu item by ID
 exports.editMenuItem = async (id, data) => {

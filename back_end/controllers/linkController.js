@@ -12,22 +12,23 @@ exports.getAllLinks = async (req, res) => {
   }
 };
 
+
 // Add a new link
 exports.addLink = async (req, res) => {
-  try {
-    const { label, url } = req.body;
-
-    if (!label || !url) {
-      return res.status(400).json({ message: 'Label and URL are required' });
+    try {
+      const { label } = req.body; // Only label is needed, URL is generated automatically
+  
+      if (!label) {
+        return res.status(400).json({ message: 'Label is required' });
+      }
+  
+      const newLink = await linkService.addLink(label); // Pass only the label
+      res.status(201).json(newLink);
+    } catch (error) {
+      res.status(500).json({ message: 'Error adding link', error });
     }
-
-    const newLink = await linkService.addLink(label, url);
-    res.status(201).json(newLink);
-  } catch (error) {
-    res.status(500).json({ message: 'Error adding link', error });
-  }
-};
-
+  };
+  
 // Edit a link by ID
 exports.editLink = async (req, res) => {
   try {

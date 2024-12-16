@@ -100,17 +100,19 @@ exports.deleteMenuItem = async (id) => {
 };
 
 
-
-// Add a new link
-exports.addLink = async (label, url) => {
+// Add a new link with automatic URL generation based on label
+exports.addLink = async (label) => {
   try {
-    const newLink = await Link.create({ label, url});
+    // Generate URL automatically by converting the label to a URL-friendly format
+    const url = label.toLowerCase().replace(/\s+/g, '-'); // Convert spaces to hyphens and lowercase
+    const newLink = await Link.create({ label, url });
     return newLink;
   } catch (error) {
     console.error('Error adding link:', error);
     throw new Error('Failed to add link');
   }
 };
+
 
 // Service function to update a link by ID
 exports.updateLink = async (id, label) => {

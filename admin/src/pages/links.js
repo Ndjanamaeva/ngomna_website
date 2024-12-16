@@ -22,7 +22,7 @@ const columns = [
 export default function CenteredTable() {
   const [links, setLinks] = React.useState([]);
   const [open, setOpen] = React.useState(false);
-  const [formData, setFormData] = React.useState({ id: '', label: '', url: '' });
+  const [formData, setFormData] = React.useState({ id: '', label: '' });
   const [editMode, setEditMode] = React.useState(false);
 
   // Fetch links on component mount
@@ -51,25 +51,25 @@ export default function CenteredTable() {
 
   // Handle form submission for adding/editing links
   const handleSubmit = async () => {
-    if (!formData.label.trim() || !formData.url.trim()) {
-      alert('Label and URL are required');
+    if (!formData.label.trim()) {
+      alert('Label is required');
       return;
     }
 
     try {
       if (editMode) {
         // Edit request
-        await axios.put(`http://localhost:5000/api/links/${formData.id}`, { label: formData.label, url: formData.url });
-        setLinks(links.map(item => (item.id === formData.id ? { ...item, label: formData.label, url: formData.url } : item)));
+        await axios.put(`http://localhost:5000/api/links/${formData.id}`, { label: formData.label });
+        setLinks(links.map(item => (item.id === formData.id ? { ...item, label: formData.label } : item)));
       } else {
-        // Add request
-        const response = await axios.post(`http://localhost:5000/api/links`, { label: formData.label, url: formData.url });
-        // Add front-end ID, incrementing from the current length of links array
-        const newLink = { ...response.data, id: links.length + 1 }; 
+        // Add request - This will create a new link, menu item, and page
+        const response = await axios.post(`http://localhost:5000/api/links`, { label: formData.label });
+        const newLink = { ...response.data, id: links.length + 1 }; // Assuming backend response includes the new item
         setLinks([...links, newLink]);
       }
+
       setOpen(false);
-      setFormData({ id: '', label: '', url: '' });
+      setFormData({ id: '', label: '' });
       setEditMode(false);
     } catch (error) {
       console.error(editMode ? 'Error updating link' : 'Error adding link', error);
@@ -82,10 +82,10 @@ export default function CenteredTable() {
     setOpen(true);
     if (item) {
       setEditMode(true);
-      setFormData({ id: item.id, label: item.label, url: item.url });
+      setFormData({ id: item.id, label: item.label });
     } else {
       setEditMode(false);
-      setFormData({ id: '', label: '', url: '' });
+      setFormData({ id: '', label: '' });
     }
   };
 
@@ -193,15 +193,6 @@ export default function CenteredTable() {
             variant="outlined"
             value={formData.label}
             onChange={(e) => setFormData({ ...formData, label: e.target.value })}
-          />
-          <TextField
-            margin="dense"
-            label="Link URL"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={formData.url}
-            onChange={(e) => setFormData({ ...formData, url: e.target.value })}
           />
         </DialogContent>
         <DialogActions>

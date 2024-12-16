@@ -57,7 +57,7 @@ export default function CenteredTable() {
     }
 
     try {
-      let newMenuItem = { label: formData.label, pageId: null };
+      let newMenuItem = { label: formData.label, pageId: formData.pageId };
       
       if (editMode) {
         // Edit request

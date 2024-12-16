@@ -1,4 +1,4 @@
-//database.js
+// database.js
 
 const { Sequelize, DataTypes } = require('sequelize');
 
@@ -18,20 +18,20 @@ const Menu = sequelize.define('Menu', {
   }
 });
 
-// Define the Page model (page table) 
+// Define the Page model (page table)
 const Page = sequelize.define('Page', {
   name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  link: {
+  url: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
   }
 });
 
-// Define the MenuItem model (menuitem table) 
+// Define the MenuItem model (menuitem table)
 const MenuItem = sequelize.define('MenuItem', {
   label: {
     type: DataTypes.STRING,
@@ -39,7 +39,7 @@ const MenuItem = sequelize.define('MenuItem', {
   }
 });
 
-// Define the Links model (links table) 
+// Define the Link model (links table)
 const Link = sequelize.define('Link', {
   label: {
     type: DataTypes.STRING,
@@ -59,11 +59,11 @@ const Link = sequelize.define('Link', {
   }
 });
 
-// Define the relationships
+// Define the relationships with cascading behavior
 Menu.hasMany(MenuItem, {
   foreignKey: 'menuId',
   as: 'menuItems',
-  onDelete: 'CASCADE',
+  onDelete: 'CASCADE',  // Cascade delete for MenuItem when Menu is deleted
 });
 MenuItem.belongsTo(Menu, {
   foreignKey: 'menuId',
@@ -72,20 +72,24 @@ MenuItem.belongsTo(Menu, {
 
 MenuItem.belongsTo(Page, {
   foreignKey: 'pageId',
-  as: 'page'
+  as: 'page',
+  onDelete: 'CASCADE' // Cascade delete for Page when MenuItem is deleted
 });
 Page.hasMany(MenuItem, {
   foreignKey: 'pageId',
-  as: 'menuItems'
+  as: 'menuItems',
+  onDelete: 'CASCADE'  // Ensure deletion of MenuItems when Page is deleted
 });
 
 Link.belongsTo(Page, {
   foreignKey: 'pageId',
-  as: 'page'
+  as: 'page',
+  onDelete: 'CASCADE' // Cascade delete for Link when Page is deleted
 });
 Page.hasMany(Link, {
   foreignKey: 'pageId',
-  as: 'links'
+  as: 'links',
+  onDelete: 'CASCADE' // Cascade delete for Links when Page is deleted
 });
 
 // Sync the models with the database and insert sample data
@@ -95,21 +99,21 @@ sequelize.sync({ force: true }) // This will recreate the tables
 
     // Create pages
     const pages = await Page.bulkCreate([
-      { name: 'Payslips', link: '/payslips' },
-      { name: 'Information', link: '/information' },
-      { name: 'Notifications', link: '/notifications' },
-      { name: 'Census', link: '/census' },
-      { name: 'Messaging', link: '/messaging' },
-      { name: 'Children', link: '/children' },
-      { name: 'Security', link: '/security' },
-      { name: 'OTP', link: '/otp' },
-      { name: 'DGI', link: '/dgi' },
-      { name: 'Mission', link: '/mission' },
-      { name: 'Vision', link: '/vision' },
-      { name: 'Perspectives', link: '/perspectives' },
-      { name: 'WhatsApp', link: '/whatsapp' },
-      { name: 'E-mail', link: '/email' },
-      { name: 'Facebook', link: '/facebook' }
+      { name: 'Payslips', url: '/payslips' },
+      { name: 'Information', url: '/information' },
+      { name: 'Notifications', url: '/notifications' },
+      { name: 'Census', url: '/census' },
+      { name: 'Messaging', url: '/messaging' },
+      { name: 'Children', url: '/children' },
+      { name: 'Security', url: '/security' },
+      { name: 'OTP', url: '/otp' },
+      { name: 'DGI', url: '/dgi' },
+      { name: 'Mission', url: '/mission' },
+      { name: 'Vision', url: '/vision' },
+      { name: 'Perspectives', url: '/perspectives' },
+      { name: 'WhatsApp', url: '/whatsapp' },
+      { name: 'E-mail', url: '/email' },
+      { name: 'Facebook', url: '/facebook' }
     ]);
 
     console.log('Pages created:', pages);

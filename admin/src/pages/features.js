@@ -13,13 +13,14 @@ import axios from 'axios';
 import { TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import '../styles/feature.css';
 
+// Add 'ID' column to the table columns
 const columns = [
   { id: 'id', label: 'ID', minWidth: 50 },
   { id: 'menuitem', label: 'Menu Item', minWidth: 150 },
   { id: 'actions', label: 'Actions', minWidth: 100, align: 'center' },
 ];
 
-export default function CenteredTable() {
+export default function FeaturesPage() {
   const [menuItems, setMenuItems] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [formData, setFormData] = React.useState({ id: '', label: '' });
@@ -29,8 +30,13 @@ export default function CenteredTable() {
   React.useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/menuitems/1');
-        setMenuItems(response.data);
+        const response = await axios.get('http://localhost:5000/api/menuitems/1');  // Fetching data from API
+        // Generate a frontend ID if the backend does not include it
+        const menuItemsWithId = response.data.map((item, index) => ({
+          ...item,
+          id: index + 1,  // Generate frontend ID based on index (you could use a unique library for this as well)
+        }));
+        setMenuItems(menuItemsWithId);  // Store data in state
       } catch (error) {
         console.error('Error fetching menu items:', error);
       }
@@ -42,60 +48,60 @@ export default function CenteredTable() {
   // Handle delete action
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/menuitems/${id}`);
-      setMenuItems(menuItems.filter(item => item.id !== id));
+      await axios.delete(`http://localhost:5000/api/menuitems/${id}`);  // Delete API request
+      setMenuItems(menuItems.filter(item => item.id !== id));  // Update state after deletion
     } catch (error) {
       console.error('Error deleting menu item:', error);
     }
   };
 
-  // React component code
-const handleSubmit = async () => {
-  if (!formData.label.trim()) {
-    alert('Label is required');
-    return;
-  }
-
-  try {
-    let newMenuItem = { label: formData.label };
-    
-    if (editMode) {
-      // Edit request
-      await axios.put(`http://localhost:5000/api/menuitems/${formData.id}`, { label: formData.label });
-      setMenuItems(menuItems.map(item => (item.id === formData.id ? { ...item, label: formData.label } : item)));
-    } else {
-      // Add request - This will create a new page automatically
-      const response = await axios.post(`http://localhost:5000/api/menuitems/1`, newMenuItem);
-      const newItem = { ...response.data, id: menuItems.length + 1 }; // Assuming backend response includes the new item
-      setMenuItems([...menuItems, newItem]);
+  // Handle form submit (both add and edit)
+  const handleSubmit = async () => {
+    if (!formData.label.trim()) {
+      alert('Label is required');
+      return;
     }
 
-    setOpen(false);
-    setFormData({ id: '', label: '' });
-    setEditMode(false);
-  } catch (error) {
-    console.error(editMode ? 'Error updating menu item' : 'Error adding menu item', error);
-    alert('An error occurred. Please try again.');
-  }
-};
+    try {
+      let newMenuItem = { label: formData.label };
 
+      if (editMode) {
+        // Edit request
+        await axios.put(`http://localhost:5000/api/menuitems/${formData.id}`, { label: formData.label });
+        setMenuItems(menuItems.map(item => (item.id === formData.id ? { ...item, label: formData.label } : item)));
+      } else {
+        // Add request
+        const response = await axios.post('http://localhost:5000/api/menuitems/1', newMenuItem);  // Assuming backend creates a new item
+        // Add a unique frontend ID after creating the new item
+        const newMenuItemWithId = { ...response.data, id: menuItems.length + 1 };
+        setMenuItems([...menuItems, newMenuItemWithId]);  // Update state with newly added item
+      }
 
-  // Handle form open for add or edit
+      setOpen(false);  // Close dialog
+      setFormData({ id: '', label: '' });  // Reset form
+      setEditMode(false);  // Reset edit mode
+    } catch (error) {
+      console.error(editMode ? 'Error updating menu item' : 'Error adding menu item', error);
+      alert('An error occurred. Please try again.');
+    }
+  };
+
+  // Open the form in add/edit mode
   const handleOpenForm = (item = null) => {
     if (item) {
-      setEditMode(true);
-      setFormData({ id: item.id, label: item.label });
+      setEditMode(true);  // Set edit mode
+      setFormData({ id: item.id, label: item.label });  // Populate form with item data
     } else {
-      setEditMode(false);
-      setFormData({ id: '', label: '' });
+      setEditMode(false);  // Set add mode
+      setFormData({ id: '', label: '' });  // Clear form data
     }
-    setOpen(true);
+    setOpen(true);  // Open form dialog
   };
 
   return (
     <Layout>
       <div className="heading">
-        <h1>FEATURES MENU MANAGEMENT</h1> 
+        <h1>FEATURES MENU MANAGEMENT</h1>
       </div>
       <div className="add" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px', marginTop: '50px', paddingLeft: '180px' }}>
         <h5>Add a Menu Item Here!</h5>
@@ -103,7 +109,7 @@ const handleSubmit = async () => {
           Add
         </Button>
       </div>
-      
+
       <Box
         sx={{
           display: 'flex',
@@ -113,7 +119,7 @@ const handleSubmit = async () => {
           marginTop: '20px',
           height: 'calc(100vh - 100px)',
         }}
-      >   
+      >
         <Paper sx={{ width: '100%', maxWidth: 1000, overflow: 'hidden', height: '100%' }}>
           <TableContainer sx={{ maxHeight: '100%' }}>
             <Table stickyHeader aria-label="sticky table">
@@ -125,7 +131,7 @@ const handleSubmit = async () => {
                       align={column.align}
                       style={{
                         minWidth: column.minWidth,
-                        backgroundColor: ' rgb(223, 223, 223)',
+                        backgroundColor: 'rgb(223, 223, 223)',
                         fontWeight: 'bold'
                       }}
                     >
@@ -137,10 +143,10 @@ const handleSubmit = async () => {
               <TableBody>
                 {menuItems.map((item) => (
                   <TableRow hover role="checkbox" tabIndex={-1} key={item.id}>
-                    <TableCell>{item.id}</TableCell>
+                    <TableCell>{item.id}</TableCell>  {/* Display the frontend-generated ID */}
                     <TableCell>{item.label}</TableCell>
                     <TableCell align="center">
-                      <Button variant="contained" color="primary" size="small" style={{ marginRight: 8, backgroundColor: ' rgb(75, 75, 75)' }} onClick={() => handleOpenForm(item)}>
+                      <Button variant="contained" color="primary" size="small" style={{ marginRight: 8, backgroundColor: 'rgb(75, 75, 75)' }} onClick={() => handleOpenForm(item)}>
                         Edit
                       </Button>
                       <Button variant="contained" color="secondary" size="small" style={{ backgroundColor: 'red' }} onClick={() => handleDelete(item.id)}>
@@ -155,7 +161,7 @@ const handleSubmit = async () => {
         </Paper>
       </Box>
 
-      {/* Add/Edit Dialog */}
+      {/* Dialog for Add/Edit Menu Item */}
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>{editMode ? 'Edit Menu Item' : 'Add Menu Item'}</DialogTitle>
         <DialogContent>

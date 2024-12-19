@@ -2,7 +2,6 @@
 
 const { MenuItem, Link, Page } = require('../config/Database');
 
-
 // Get all menu items for a specific menu
 exports.getAllMenuItemsForMenu = async (menuId) => {
   try {
@@ -12,7 +11,6 @@ exports.getAllMenuItemsForMenu = async (menuId) => {
     throw new Error('Failed to fetch menu items for menu');
   }
 };
-
 
 // Add a new menu item for a specific menu
 exports.addMenuItemToMenu = async (menuId, label) => {
@@ -100,15 +98,23 @@ exports.deleteMenuItem = async (id) => {
 };
 
 
-// Add a new link with automatic URL generation based on label
-exports.addLink = async (label) => {
+// service.js
+exports.addLink = async (menuId, label) => {
   try {
-    // Generate URL automatically by converting the label to a URL-friendly format
-    const url = label.toLowerCase().replace(/\s+/g, '-'); // Convert spaces to hyphens and lowercase
-    const newLink = await Link.create({ label, url });
-    return newLink;
+    const url = `/${label.toLowerCase().replace(/\s+/g, '-')}`;  // Auto-generate URL
+
+    // Create page
+    const page = await Page.create({ name: label, url });
+
+    // Create link associated with the page
+    const link = await Link.create({ label, url: page.url, pageId: page.id });
+
+    // Create MenuItem associated with the link and menu
+    const menuItem = await MenuItem.create({ label, menuId, pageId: page.id });
+
+    return { link, menuItem, page };
   } catch (error) {
-    console.error('Error adding link:', error);
+    console.error('Error adding link, menu item, and page:', error);
     throw new Error('Failed to add link');
   }
 };

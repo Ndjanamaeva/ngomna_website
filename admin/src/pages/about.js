@@ -13,9 +13,9 @@ import axios from 'axios';
 import { TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import '../styles/feature.css';
 
-// Add 'ID' column to the table columns
+// Define columns with ID column for frontend-generated IDs
 const columns = [
-  { id: 'id', label: 'ID', minWidth: 50 },
+  { id: 'id', label: 'ID', minWidth: 50 },  // Frontend-generated ID column
   { id: 'menuitem', label: 'Menu Item', minWidth: 150 },
   { id: 'actions', label: 'Actions', minWidth: 100, align: 'center' },
 ];
@@ -23,15 +23,21 @@ const columns = [
 export default function CenteredTable() {
   const [menuItems, setMenuItems] = React.useState([]);
   const [open, setOpen] = React.useState(false);
-  const [formData, setFormData] = React.useState({ id: '', label: '' });
+  const [formData, setFormData] = React.useState({ label: '' });
   const [editMode, setEditMode] = React.useState(false);
+  const [editingItemId, setEditingItemId] = React.useState(null); // Track the ID for edits
 
   // Fetch menu items on component mount
   React.useEffect(() => {
     const fetchMenuItems = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/menuitems/2');
-        setMenuItems(response.data);
+        // Adding a frontend-generated ID to each item
+        const itemsWithId = response.data.map((item, index) => ({
+          ...item,
+          id: index + 1,  // Generating a unique ID on the frontend (you can use another method if preferred)
+        }));
+        setMenuItems(itemsWithId);
       } catch (error) {
         console.error('Error fetching menu items:', error);
       }
@@ -44,7 +50,7 @@ export default function CenteredTable() {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/api/menuitems/${id}`);
-      setMenuItems(menuItems.filter(item => item.id !== id));
+      setMenuItems(menuItems.filter((item) => item.id !== id));
     } catch (error) {
       console.error('Error deleting menu item:', error);
     }
@@ -60,16 +66,26 @@ export default function CenteredTable() {
     try {
       if (editMode) {
         // Edit request
-        await axios.put(`http://localhost:5000/api/menuitems/${formData.id}`, { label: formData.label });
-        setMenuItems(menuItems.map(item => (item.id === formData.id ? { ...item, label: formData.label } : item)));
+        await axios.put(`http://localhost:5000/api/menuitems/${editingItemId}`, { label: formData.label });
+        setMenuItems(
+          menuItems.map((item) =>
+            item.id === editingItemId ? { ...item, label: formData.label } : item
+          )
+        );
       } else {
         // Add request
-        const response = await axios.post(`http://localhost:5000/api/menuitems/2`, { label: formData.label, pageId: null });
-        setMenuItems([...menuItems, response.data]);
+        const response = await axios.post(`http://localhost:5000/api/menuitems/2`, {
+          label: formData.label,
+          pageId: null,
+        });
+        // After adding, update the frontend with the new data including a generated ID
+        const newItem = { ...response.data, id: menuItems.length + 1 };  // Assign a new frontend ID
+        setMenuItems([...menuItems, newItem]);
       }
       setOpen(false);
-      setFormData({ id: '', label: '' });
+      setFormData({ label: '' });
       setEditMode(false);
+      setEditingItemId(null);
     } catch (error) {
       console.error(editMode ? 'Error updating menu item' : 'Error adding menu item', error);
       alert('An error occurred. Please try again.');
@@ -80,10 +96,12 @@ export default function CenteredTable() {
   const handleOpenForm = (item = null) => {
     if (item) {
       setEditMode(true);
-      setFormData({ id: item.id, label: item.label });
+      setEditingItemId(item.id);
+      setFormData({ label: item.label });
     } else {
       setEditMode(false);
-      setFormData({ id: '', label: '' });
+      setEditingItemId(null);
+      setFormData({ label: '' });
     }
     setOpen(true);
   };
@@ -91,15 +109,31 @@ export default function CenteredTable() {
   return (
     <Layout>
       <div className="heading">
-        <h1>ABOUT MENU MANAGEMENT</h1> 
+        <h1>ABOUT MENU MANAGEMENT</h1>
       </div>
-      <div className="add" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px', marginTop: '50px', paddingLeft: '380px' }}>
+      <div
+        className="add"
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          gap: '10px',
+          marginTop: '50px',
+          paddingLeft: '380px',
+        }}
+      >
         <h5>Add a Menu Item Here!</h5>
-        <Button variant="contained" color="secondary" size="small" sx={{ backgroundColor: 'green' }} onClick={() => handleOpenForm()}>
+        <Button
+          variant="contained"
+          color="secondary"
+          size="small"
+          sx={{ backgroundColor: 'green' }}
+          onClick={() => handleOpenForm()}
+        >
           Add
         </Button>
       </div>
-      
+
       <Box
         sx={{
           display: 'flex',
@@ -109,7 +143,7 @@ export default function CenteredTable() {
           marginTop: '20px',
           padding: '16px',
         }}
-      >   
+      >
         <Paper sx={{ width: '100%', maxWidth: 600, overflow: 'hidden' }}>
           <TableContainer>
             <Table aria-label="simple table">
@@ -122,7 +156,7 @@ export default function CenteredTable() {
                       style={{
                         minWidth: column.minWidth,
                         backgroundColor: 'rgb(223, 223, 223)',
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
                       }}
                     >
                       {column.label}
@@ -131,16 +165,27 @@ export default function CenteredTable() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {menuItems.map((item, index) => (
+                {menuItems.map((item) => (
                   <TableRow hover role="checkbox" tabIndex={-1} key={item.id}>
-                    {/* Display auto-incremented ID based on index + 1 */}
-                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{item.id}</TableCell> {/* Display frontend-generated ID */}
                     <TableCell>{item.label}</TableCell>
                     <TableCell align="center">
-                      <Button variant="contained" color="primary" size="small" style={{ marginRight: 8, backgroundColor: 'rgb(75, 75, 75)' }} onClick={() => handleOpenForm(item)}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        style={{ marginRight: 8, backgroundColor: 'rgb(75, 75, 75)' }}
+                        onClick={() => handleOpenForm(item)}
+                      >
                         Edit
                       </Button>
-                      <Button variant="contained" color="secondary" size="small" style={{ backgroundColor: 'red' }} onClick={() => handleDelete(item.id)}>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        size="small"
+                        style={{ backgroundColor: 'red' }}
+                        onClick={() => handleDelete(item.id)}
+                      >
                         Delete
                       </Button>
                     </TableCell>
@@ -179,4 +224,3 @@ export default function CenteredTable() {
     </Layout>
   );
 }
-

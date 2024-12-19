@@ -11,6 +11,7 @@ import Box from '@mui/material/Box';
 import Layout from './../components/layout/layout';
 import axios from 'axios';
 import { TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { v4 as uuidv4 } from 'uuid'; // Importing UUID
 import '../styles/feature.css';
 
 // Add 'ID' column to the table columns
@@ -31,7 +32,12 @@ export default function CenteredTable() {
     const fetchMenuItems = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/menuitems/3');
-        setMenuItems(response.data);
+        // Generate IDs on the frontend using UUID
+        const itemsWithIds = response.data.map(item => ({
+          ...item,
+          id: uuidv4(),  // Assign unique IDs to items
+        }));
+        setMenuItems(itemsWithIds);
       } catch (error) {
         console.error('Error fetching menu items:', error);
       }
@@ -63,9 +69,14 @@ export default function CenteredTable() {
         await axios.put(`http://localhost:5000/api/menuitems/${formData.id}`, { label: formData.label });
         setMenuItems(menuItems.map(item => (item.id === formData.id ? { ...item, label: formData.label } : item)));
       } else {
-        // Add request
-        const response = await axios.post(`http://localhost:5000/api/menuitems/3`, { label: formData.label, pageId: null });
-        setMenuItems([...menuItems, response.data]);
+        // Add request (generate ID in the frontend before sending)
+        const newItem = {
+          id: uuidv4(),  // Generate unique ID for the new item
+          label: formData.label,
+          pageId: null,
+        };
+        const response = await axios.post(`http://localhost:5000/api/menuitems/3`, newItem);
+        setMenuItems([...menuItems, newItem]);
       }
       setOpen(false);
       setFormData({ id: '', label: '' });

@@ -256,7 +256,7 @@ export default function CenteredTable() {
             Cancel
           </Button>
           <Button onClick={handleSubmit} color="primary">
-            {editMode ? 'Save' : 'Add'}
+            {editMode ? 'Update' : 'Add'}
           </Button>
         </DialogActions>
       </Dialog>

@@ -1,7 +1,13 @@
+//routes.js
+
 const express = require('express');
 const router = express.Router();
 const menuController = require('../controllers/menuController');
 const linkController = require('../controllers/linkController');
+
+
+// Route to get all menus
+router.get('/api/menus', menuController.getAllMenus);
 
 // Menu Item Routes
 router.get('/api/menuitems/:menuId', menuController.getAllMenuItemsForMenu);

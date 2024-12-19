@@ -1,4 +1,18 @@
+//menuController.js
+
 const menuService = require('../services/service');
+
+
+// Get all menus
+exports.getAllMenus = async (req, res) => {
+  try {
+    const menus = await menuService.getAllMenus();
+    res.json(menus);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching menus', error });
+  }
+};
+
 
 // Get all menu items for a specific menu
 exports.getAllMenuItemsForMenu = async (req, res) => {

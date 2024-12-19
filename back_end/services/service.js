@@ -1,6 +1,18 @@
 //service.js
 
-const { MenuItem, Link, Page } = require('../config/Database');
+const { MenuItem, Link, Page, Menu } = require('../config/Database');
+
+
+// Get all menus
+exports.getAllMenus = async () => {
+  try {
+    return await Menu.findAll();
+  } catch (error) {
+    console.error('Error fetching menus:', error);
+    throw new Error('Failed to fetch menus');
+  }
+};
+
 
 // Get all menu items for a specific menu
 exports.getAllMenuItemsForMenu = async (menuId) => {

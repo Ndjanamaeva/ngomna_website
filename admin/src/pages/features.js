@@ -23,8 +23,7 @@ const columns = [
 export default function FeaturesPage() {
   const [menuItems, setMenuItems] = React.useState([]);
   const [open, setOpen] = React.useState(false);
-  const [formData, setFormData] = React.useState({ id: '', label: '' });
-  const [editMode, setEditMode] = React.useState(false);
+  const [formData, setFormData] = React.useState({ label: '' });
 
   // Fetch menu items
   React.useEffect(() => {
@@ -34,7 +33,7 @@ export default function FeaturesPage() {
         // Adding a frontend-generated ID to each item
         const itemsWithId = response.data.map((item, index) => ({
           ...item,
-          id: index + 1,  // Frontend-generated ID (using index + 1)
+          id: index + 1, // Frontend-generated ID (using index + 1)
         }));
         setMenuItems(itemsWithId);
       } catch (error) {
@@ -54,45 +53,30 @@ export default function FeaturesPage() {
     }
   };
 
-  // Handle form submit (both add and edit)
+  // Handle form submit (add only)
   const handleSubmit = async () => {
     if (!formData.label.trim()) {
       alert('Label is required');
       return;
     }
-  
+
     try {
       const newMenuItem = { label: formData.label };
-  
-      if (editMode) {
-        // Send the updated label to the backend to update the corresponding menu item
-        await axios.put(`http://localhost:5000/api/menuitems/${formData.id}`, newMenuItem);
-        setMenuItems(menuItems.map(item => item.id === formData.id ? { ...item, label: formData.label } : item));
-      } else {
-        // Creating a new menu item
-        const response = await axios.post('http://localhost:5000/api/menuitems/1', newMenuItem);
-        const newItem = { ...response.data, id: menuItems.length + 1 };  // Frontend-generated ID
-        setMenuItems([...menuItems, newItem]);
-      }
-  
+      const response = await axios.post('http://localhost:5000/api/menuitems/1', newMenuItem);
+      const newItem = { ...response.data, id: menuItems.length + 1 }; // Frontend-generated ID
+      setMenuItems([...menuItems, newItem]);
+
       setOpen(false);
-      setFormData({ id: '', label: '' });
-      setEditMode(false);
+      setFormData({ label: '' });
     } catch (error) {
-      console.error(editMode ? 'Error updating menu item' : 'Error adding menu item', error);
+      console.error('Error adding menu item', error);
       alert('An error occurred. Please try again.');
     }
-  };  
+  };
 
-  // Open the form in add/edit mode
-  const handleOpenForm = (item = null) => {
-    if (item) {
-      setEditMode(true);
-      setFormData({ id: item.id, label: item.label });
-    } else {
-      setEditMode(false);
-      setFormData({ id: '', label: '' });
-    }
+  // Open the form
+  const handleOpenForm = () => {
+    setFormData({ label: '' });
     setOpen(true);
   };
 
@@ -103,19 +87,38 @@ export default function FeaturesPage() {
       </div>
       <div className="add" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px', marginTop: '50px', paddingLeft: '180px' }}>
         <h5>Add a Menu Item Here!</h5>
-        <Button variant="contained" color="secondary" size="small" sx={{ backgroundColor: 'green' }} onClick={() => handleOpenForm()}>
+        <Button
+          variant="contained"
+          color="secondary"
+          size="small"
+          sx={{ backgroundColor: 'green' }}
+          onClick={handleOpenForm}
+        >
           Add
         </Button>
       </div>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', boxSizing: 'border-box', marginTop: '20px', height: 'calc(100vh - 100px)' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          boxSizing: 'border-box',
+          marginTop: '20px',
+          height: 'calc(100vh - 100px)',
+        }}
+      >
         <Paper sx={{ width: '100%', maxWidth: 1000, overflow: 'hidden', height: '100%' }}>
           <TableContainer sx={{ maxHeight: '100%' }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
                   {columns.map((column) => (
-                    <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth, backgroundColor: 'rgb(223, 223, 223)', fontWeight: 'bold' }}>
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth, backgroundColor: 'rgb(223, 223, 223)', fontWeight: 'bold' }}
+                    >
                       {column.label}
                     </TableCell>
                   ))}
@@ -127,10 +130,13 @@ export default function FeaturesPage() {
                     <TableCell>{item.id}</TableCell>
                     <TableCell>{item.label}</TableCell>
                     <TableCell align="center">
-                      <Button variant="contained" color="primary" size="small" style={{ marginRight: 8, backgroundColor: 'rgb(75, 75, 75)' }} onClick={() => handleOpenForm(item)}>
-                        Edit
-                      </Button>
-                      <Button variant="contained" color="secondary" size="small" style={{ backgroundColor: 'red' }} onClick={() => handleDelete(item.label)}>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        size="small"
+                        style={{ backgroundColor: 'red' }}
+                        onClick={() => handleDelete(item.label)}
+                      >
                         Delete
                       </Button>
                     </TableCell>
@@ -142,15 +148,24 @@ export default function FeaturesPage() {
         </Paper>
       </Box>
 
-      {/* Dialog for Add/Edit Menu Item */}
+      {/* Dialog for Add Menu Item */}
       <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>{editMode ? 'Edit Menu Item' : 'Add Menu Item'}</DialogTitle>
+        <DialogTitle>Add Menu Item</DialogTitle>
         <DialogContent>
-          <TextField autoFocus margin="dense" label="Menu Item Label" type="text" fullWidth variant="outlined" value={formData.label} onChange={(e) => setFormData({ ...formData, label: e.target.value })} />
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Menu Item Label"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={formData.label}
+            onChange={(e) => setFormData({ label: e.target.value })}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="primary">Cancel</Button>
-          <Button onClick={handleSubmit} color="primary">{editMode ? 'Save' : 'Add'}</Button>
+          <Button onClick={handleSubmit} color="primary">Add</Button>
         </DialogActions>
       </Dialog>
     </Layout>

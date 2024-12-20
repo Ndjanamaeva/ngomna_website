@@ -46,40 +46,6 @@ exports.addMenuItemToMenu = async (menuId, label) => {
   }
 };
 
-// Edit a menu item by ID
-exports.editMenuItem = async (id, data) => {
-  try {
-    const menuItem = await MenuItem.findByPk(id);
-    if (!menuItem) return null;
-
-    // Update the menu item
-    menuItem.label = data.label;
-    await menuItem.save();
-
-    // Update the associated page
-    const page = await Page.findByPk(menuItem.pageId);
-    if (page) {
-      page.name = data.label;
-      page.url = `/${data.label.toLowerCase().replace(/\s+/g, '-')}`;
-      await page.save();
-    }
-
-    // Update the associated link
-    const link = await Link.findOne({ where: { pageId: menuItem.pageId } });
-    if (link) {
-      link.label = data.label;
-      link.url = page.url;  // Ensure the link URL matches the page's updated URL
-      await link.save();
-    }
-
-    return menuItem;
-  } catch (error) {
-    console.error('Error updating menu item, link, and page', error);
-    throw new Error('Failed to update menu item, link, and page');
-  }
-};
-
-
 // Delete a menu item based on its label
 exports.deleteMenuItemByLabel = async (label) => {
   try {
@@ -122,36 +88,6 @@ exports.addLink = async (menuId, label) => {
   }
 };
 
-// Service function to update a link by ID
-exports.updateLink = async (id, label) => {
-  try {
-    const link = await Link.findByPk(id);
-    if (!link) return null;
-    
-    link.label = label;
-    await link.save();
-    return link;
-  } catch (error) {
-    console.error('Error in updateLink service:', error);
-    throw new Error('Failed to update link');
-  }
-};
-
-// Service function to edit (update) a link by ID
-exports.editLink= async (id, data) => {
-  try {
-    const link = await Link.findByPk(id);
-    if (!link) return null;
-
-    // Update the link with new data
-    await link.update(data);
-    return link; // Return the updated link
-  } catch (error) {
-    console.error('Error in editLink service:', error);
-    throw new Error('Failed to edit link');
-  }
-};
-
 // Service function to get all links
 exports.getAllLinks = async () => {
   try {
@@ -162,16 +98,23 @@ exports.getAllLinks = async () => {
   }
 };
 
-// Service function to delete a link by ID
-exports.deleteLink = async (id) => {
+// Delete a link based on its label
+exports.deleteLinkByLabel = async (label) => {
   try {
-    const link = await Link.findByPk(id);
+    const link = await Link.findOne({ where: { label }, include: [{ model: Page, as: 'page' }] });
+
     if (!link) return null;
 
+    const menuItem = await Link.findOne({ where: { pageId: link.pageId } });
+    if (menuItem) await link.destroy();
+
+    const page = link.page;
+    if (page) await page.destroy();
+
     await link.destroy();
-    return { message: 'Link deleted successfully' };
+    return true;
   } catch (error) {
-    console.error('Error in deleteLink service:', error);
+    console.error('Error deleting link', error);
     throw new Error('Failed to delete link');
   }
 };

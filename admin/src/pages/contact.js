@@ -1,3 +1,4 @@
+// contact.js
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -24,8 +25,6 @@ export default function CenteredTable() {
   const [menuItems, setMenuItems] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [formData, setFormData] = React.useState({ label: '' });
-  const [editMode, setEditMode] = React.useState(false);
-  const [editingItemId, setEditingItemId] = React.useState(null); // Track the ID for edits
 
   // Fetch menu items on component mount
   React.useEffect(() => {
@@ -56,7 +55,7 @@ export default function CenteredTable() {
     }
   };
 
-  // Handle form submission for adding/editing menu items
+  // Handle form submission for adding menu items
   const handleSubmit = async () => {
     if (!formData.label.trim()) {
       alert('Label is required');
@@ -64,45 +63,25 @@ export default function CenteredTable() {
     }
 
     try {
-      if (editMode) {
-        // Edit request
-        await axios.put(`http://localhost:5000/api/menuitems/${editingItemId}`, { label: formData.label });
-        setMenuItems(
-          menuItems.map((item) =>
-            item.id === editingItemId ? { ...item, label: formData.label } : item
-          )
-        );
-      } else {
-        // Add request
-        const response = await axios.post(`http://localhost:5000/api/menuitems/3`, {
-          label: formData.label,
-          pageId: null,
-        });
-        // After adding, update the frontend with the new data including a generated ID
-        const newItem = { ...response.data, id: menuItems.length + 1 };  // Assign a new frontend ID
-        setMenuItems([...menuItems, newItem]);
-      }
+      // Add request
+      const response = await axios.post(`http://localhost:5000/api/menuitems/3`, {
+        label: formData.label,
+        pageId: null,
+      });
+      // After adding, update the frontend with the new data including a generated ID
+      const newItem = { ...response.data, id: menuItems.length + 1 };  // Assign a new frontend ID
+      setMenuItems([...menuItems, newItem]);
       setOpen(false);
       setFormData({ label: '' });
-      setEditMode(false);
-      setEditingItemId(null);
     } catch (error) {
-      console.error(editMode ? 'Error updating menu item' : 'Error adding menu item', error);
+      console.error('Error adding menu item', error);
       alert('An error occurred. Please try again.');
     }
   };
 
-  // Handle form open for add or edit
-  const handleOpenForm = (item = null) => {
-    if (item) {
-      setEditMode(true);
-      setEditingItemId(item.id);
-      setFormData({ label: item.label });
-    } else {
-      setEditMode(false);
-      setEditingItemId(null);
-      setFormData({ label: '' });
-    }
+  // Handle form open for adding a new item
+  const handleOpenForm = () => {
+    setFormData({ label: '' });
     setOpen(true);
   };
 
@@ -128,7 +107,7 @@ export default function CenteredTable() {
           color="secondary"
           size="small"
           sx={{ backgroundColor: 'green' }}
-          onClick={() => handleOpenForm()}
+          onClick={handleOpenForm}
         >
           Add
         </Button>
@@ -172,15 +151,6 @@ export default function CenteredTable() {
                     <TableCell align="center">
                       <Button
                         variant="contained"
-                        color="primary"
-                        size="small"
-                        style={{ marginRight: 8, backgroundColor: 'rgb(75, 75, 75)' }}
-                        onClick={() => handleOpenForm(item)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="contained"
                         color="secondary"
                         size="small"
                         style={{ backgroundColor: 'red' }}
@@ -197,9 +167,9 @@ export default function CenteredTable() {
         </Paper>
       </Box>
 
-      {/* Add/Edit Dialog */}
+      {/* Add Dialog */}
       <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>{editMode ? 'Edit Menu Item' : 'Add Menu Item'}</DialogTitle>
+        <DialogTitle>Add Menu Item</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -217,7 +187,7 @@ export default function CenteredTable() {
             Cancel
           </Button>
           <Button onClick={handleSubmit} color="primary">
-            {editMode ? 'Save' : 'Add'}
+            Add
           </Button>
         </DialogActions>
       </Dialog>

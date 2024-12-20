@@ -1,3 +1,4 @@
+// links.js
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -25,19 +26,13 @@ export default function CenteredTable() {
   const [menus, setMenus] = React.useState([]); // State to hold menus
   const [open, setOpen] = React.useState(false);
   const [formData, setFormData] = React.useState({ id: '', label: '', menuId: '' });
-  const [editMode, setEditMode] = React.useState(false);
 
   // Fetch links and menus on component mount
   React.useEffect(() => {
     const fetchLinks = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/links');
-        // Here, you can generate IDs frontend-side based on current state or using a simple incrementing counter
-        const linksWithIds = response.data.map((item, index) => ({
-          ...item,
-          id: index + 1, // Frontend-generated ID (can be replaced with a more complex ID generator)
-        }));
-        setLinks(linksWithIds);  // Set links with generated IDs
+        setLinks(response.data);
       } catch (error) {
         console.error('Error fetching links:', error);
       }
@@ -56,17 +51,18 @@ export default function CenteredTable() {
     fetchMenus();
   }, []);
 
+
   // Handle delete action
-  const handleDelete = async (id) => {
+  const handleDelete = async (label) => {
     try {
-      await axios.delete(`http://localhost:5000/api/links/${id}`);
-      setLinks(links.filter((item) => item.id !== id));  // Remove deleted item from state
+      await axios.delete(`http://localhost:5000/api/links/label/${label}`);
+      setLinks(links.filter(item => item.label !== label));
     } catch (error) {
       console.error('Error deleting link:', error);
     }
   };
 
-  // Handle form submission (Add/Edit link)
+  // Handle form submission (Add link)
   const handleSubmit = async () => {
     if (!formData.label.trim()) {
       alert('Label is required');
@@ -79,56 +75,36 @@ export default function CenteredTable() {
     }
 
     try {
-      if (editMode) {
-        // Edit request
-        await axios.put(`http://localhost:5000/api/links/${formData.id}`, { label: formData.label, menuId: formData.menuId });
-        setLinks(links.map((item) => (item.id === formData.id ? { ...item, label: formData.label } : item)));
-      } else {
-        // Add request - This will create a new link, menu item, and page
-        const response = await axios.post('http://localhost:5000/api/links', {
-          label: formData.label,
-          menuId: formData.menuId, // Pass the selected menuId
-        });
+      // Add request - This will create a new link, menu item, and page
+      const response = await axios.post('http://localhost:5000/api/links', {
+        label: formData.label,
+        menuId: formData.menuId, // Pass the selected menuId
+      });
 
-        // Check if the response contains the necessary data
-        if (!response.data.link || !response.data.menuItem || !response.data.page) {
-          throw new Error('Invalid response structure');
-        }
-
-        // Extracting the new link, MenuItem, and Page from the response
-        const { link, menuItem, page } = response.data;
-
-        // Generating a unique ID on frontend (in case the backend doesn't provide it)
-        const newId = links.length + 1;  // Frontend-generated ID (simple increment)
-
-        // Adding the new link to the state with the generated ID
-        setLinks([...links, { id: newId, label: link.label }]);
-
-        // Optional: Log the created MenuItem and Page
-        console.log('MenuItem created:', menuItem);
-        console.log('Page created:', page);
+      // Check if the response contains the necessary data
+      if (!response.data.link || !response.data.menuItem || !response.data.page) {
+        throw new Error('Invalid response structure');
       }
+
+      // Extracting the new link, MenuItem, and Page from the response
+      const { link, menuItem, page } = response.data;
+
+      // Adding the new link to the state with the generated ID
+      setLinks([...links, { id: link.id, label: link.label }]);
 
       // Reset form state
       setOpen(false);
       setFormData({ id: '', label: '', menuId: '' });
-      setEditMode(false);
     } catch (error) {
-      console.error(editMode ? 'Error updating link' : 'Error adding link', error);
+      console.error('Error adding link', error);
       alert(error.message || 'An error occurred. Please try again.');
     }
   };
 
-  // Handle form open for add or edit
-  const handleOpenForm = (item = null) => {
+  // Handle form open for add
+  const handleOpenForm = () => {
     setOpen(true);
-    if (item) {
-      setEditMode(true);
-      setFormData({ id: item.id, label: item.label, menuId: item.menuId });
-    } else {
-      setEditMode(false);
-      setFormData({ id: '', label: '', menuId: '' });
-    }
+    setFormData({ id: '', label: '', menuId: '' });
   };
 
   return (
@@ -153,7 +129,7 @@ export default function CenteredTable() {
           color="secondary"
           size="small"
           sx={{ backgroundColor: 'green' }}
-          onClick={() => handleOpenForm()}
+          onClick={handleOpenForm}
         >
           Add
         </Button>
@@ -197,19 +173,10 @@ export default function CenteredTable() {
                     <TableCell align="center">
                       <Button
                         variant="contained"
-                        color="primary"
-                        size="small"
-                        style={{ marginRight: 8, backgroundColor: 'rgb(75, 75, 75)' }}
-                        onClick={() => handleOpenForm(item)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="contained"
                         color="secondary"
                         size="small"
                         style={{ backgroundColor: 'red' }}
-                        onClick={() => handleDelete(item.id)}
+                        onClick={() => handleDelete(item.label)}
                       >
                         Delete
                       </Button>
@@ -222,9 +189,9 @@ export default function CenteredTable() {
         </Paper>
       </Box>
 
-      {/* Add/Edit Dialog */}
+      {/* Add Dialog */}
       <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>{editMode ? 'Edit Link' : 'Add Link'}</DialogTitle>
+        <DialogTitle>Add Link</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -256,7 +223,7 @@ export default function CenteredTable() {
             Cancel
           </Button>
           <Button onClick={handleSubmit} color="primary">
-            {editMode ? 'Update' : 'Add'}
+            Add
           </Button>
         </DialogActions>
       </Dialog>

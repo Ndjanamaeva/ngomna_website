@@ -10,7 +10,6 @@ exports.getAllLinks = async (req, res) => {
   }
 };
 
-
 exports.addLink = async (req, res) => {
   try {
     const { label, menuId } = req.body; // Accept menuId along with label
@@ -29,35 +28,20 @@ exports.addLink = async (req, res) => {
   }
 };
 
-
-// Edit a link by ID
-exports.editLink = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { label } = req.body;
-
-    if (!label) {
-      return res.status(400).json({ message: 'Label is required' });
-    }
-
-    const updatedLink = await linkService.editLink(id, { label });
-    if (!updatedLink) {
-      return res.status(404).json({ message: 'Link not found' });
-    }
-
-    res.json(updatedLink);
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating link', error });
-  }
-};
-
-// Delete a link by ID
+// Delete a link based on its label
 exports.deleteLink = async (req, res) => {
   try {
-    const { id } = req.params;
-    await linkService.deleteLink(id);
-    res.status(204).send();
+    const { label } = req.params;  // Using label instead of id
+    const result = await linkService.deleteLinkByLabel(label);
+
+    if (!result) {
+      return res.status(404).json({ message: 'Link with the specified label not found' });
+    }
+
+    res.status(204).send();  // No content response for successful deletion
   } catch (error) {
     res.status(500).json({ message: 'Error deleting link', error });
   }
 };
+
+

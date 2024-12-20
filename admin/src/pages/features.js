@@ -60,28 +60,29 @@ export default function FeaturesPage() {
       alert('Label is required');
       return;
     }
-
+  
     try {
       const newMenuItem = { label: formData.label };
-
+  
       if (editMode) {
-        await axios.put(`http://localhost:5000/api/menuitems/${formData.id}`, { label: formData.label });
+        // Send the updated label to the backend to update the corresponding menu item
+        await axios.put(`http://localhost:5000/api/menuitems/${formData.id}`, newMenuItem);
         setMenuItems(menuItems.map(item => item.id === formData.id ? { ...item, label: formData.label } : item));
       } else {
-        const response = await axios.post('http://localhost:5000/api/menuitems/1', newMenuItem);  // Send the creation request
-        // After adding, assign a frontend-generated ID
+        // Creating a new menu item
+        const response = await axios.post('http://localhost:5000/api/menuitems/1', newMenuItem);
         const newItem = { ...response.data, id: menuItems.length + 1 };  // Frontend-generated ID
-        setMenuItems([...menuItems, newItem]);  // Add the new item with the frontend-generated ID
+        setMenuItems([...menuItems, newItem]);
       }
-
-      setOpen(false);  // Close the dialog
-      setFormData({ id: '', label: '' });  // Reset form data
-      setEditMode(false);  // Reset edit mode
+  
+      setOpen(false);
+      setFormData({ id: '', label: '' });
+      setEditMode(false);
     } catch (error) {
       console.error(editMode ? 'Error updating menu item' : 'Error adding menu item', error);
       alert('An error occurred. Please try again.');
     }
-  };
+  };  
 
   // Open the form in add/edit mode
   const handleOpenForm = (item = null) => {

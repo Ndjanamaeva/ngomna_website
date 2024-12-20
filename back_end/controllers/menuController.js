@@ -1,3 +1,5 @@
+//menuController.js
+
 const menuService = require('../services/service');
 
 // Get all menus
@@ -44,16 +46,34 @@ exports.editMenuItem = async (req, res) => {
     const { id } = req.params;
     const { label } = req.body;
 
-    const updatedMenuItem = await menuService.editMenuItem(id, { label });
-    if (!updatedMenuItem) {
+    // Find and update the menu item
+    const menuItem = await menuService.editMenuItem(id, { label });
+    if (!menuItem) {
       return res.status(404).json({ message: 'Menu item not found' });
     }
 
-    res.json(updatedMenuItem);
+    // Also update the associated link and page
+    const updatedLink = await Link.update({ label, url: `/${label.toLowerCase().replace(/\s+/g, '-')}` }, {
+      where: { menuItemId: id },
+      returning: true,
+    });
+    
+    const updatedPage = await Page.update({ name: label, url: `/${label.toLowerCase().replace(/\s+/g, '-')}` }, {
+      where: { id: menuItem.pageId },
+      returning: true,
+    });
+
+    // Return the updated items
+    res.json({
+      menuItem,
+      link: updatedLink[1][0],
+      page: updatedPage[1][0]
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating menu item', error });
+    res.status(500).json({ message: 'Error updating menu item, link, and page', error });
   }
 };
+
 
 // Get all menus
 exports.getAllMenus = async (req, res) => {

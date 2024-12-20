@@ -52,14 +52,33 @@ exports.editMenuItem = async (id, data) => {
     const menuItem = await MenuItem.findByPk(id);
     if (!menuItem) return null;
 
+    // Update the menu item
     menuItem.label = data.label;
     await menuItem.save();
+
+    // Update the associated page
+    const page = await Page.findByPk(menuItem.pageId);
+    if (page) {
+      page.name = data.label;
+      page.url = `/${data.label.toLowerCase().replace(/\s+/g, '-')}`;
+      await page.save();
+    }
+
+    // Update the associated link
+    const link = await Link.findOne({ where: { pageId: menuItem.pageId } });
+    if (link) {
+      link.label = data.label;
+      link.url = page.url;  // Ensure the link URL matches the page's updated URL
+      await link.save();
+    }
+
     return menuItem;
   } catch (error) {
-    console.error('Error updating menu item', error);
-    throw new Error('Error updating menu item');
+    console.error('Error updating menu item, link, and page', error);
+    throw new Error('Failed to update menu item, link, and page');
   }
 };
+
 
 // Delete a menu item based on its label
 exports.deleteMenuItemByLabel = async (label) => {

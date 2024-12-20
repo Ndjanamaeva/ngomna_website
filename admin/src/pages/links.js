@@ -87,7 +87,7 @@ export default function CenteredTable() {
       }
 
       // Extracting the new link, MenuItem, and Page from the response
-      const { link, menuItem, page } = response.data;
+      const { link} = response.data;
 
       // Adding the new link to the state with the generated ID
       setLinks([...links, { id: link.id, label: link.label }]);

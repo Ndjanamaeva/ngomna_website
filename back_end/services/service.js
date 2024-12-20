@@ -13,102 +13,63 @@ exports.getAllMenus = async () => {
   }
 };
 
-
 // Get all menu items for a specific menu
 exports.getAllMenuItemsForMenu = async (menuId) => {
   try {
-    return await MenuItem.findAll({ where: { menuId }, include: [{ model: Page, as: 'page' }] });
+    const menuItems = await MenuItem.findAll({ where: { menuId } });
+    return menuItems;
   } catch (error) {
-    console.error('Error fetching menu items for menu:', error);
-    throw new Error('Failed to fetch menu items for menu');
+    console.error('Error fetching menu items', error);
+    throw new Error('Error fetching menu items');
   }
 };
 
-// Add a new menu item for a specific menu
+// Add a new menu item to a specific menu
 exports.addMenuItemToMenu = async (menuId, label) => {
   try {
-    // Create a new page if no pageId is provided
-    const page = await Page.create({
-      name: label,
-      url: `/${label.toLowerCase()}`,  // Example URL pattern
-    });
-
-    // Create a new menu item and associate it with the created page
-    const newMenuItem = await MenuItem.create({
-      label,
-      menuId,
-      pageId: page.id
-    });
-
-    // Create a new link for the page
-    await Link.create({
-      label,
-      url: page.url,
-      pageId: page.id
-    });
-
-    return newMenuItem;
-  } catch (error) {
-    console.error('Error in addMenuItemToMenu service:', error);
-    throw new Error('Failed to add menu item');
-  }
-};
-
-// Edit (update) a menu item by ID
-exports.editMenuItem = async (id, data) => {
-  try {
-    const menuItem = await MenuItem.findByPk(id, { include: [{ model: Page, as: 'page' }] });
-    if (!menuItem) return null;
-
-    if (data.pageId && data.pageId !== menuItem.pageId) {
-      const newPage = await Page.findByPk(data.pageId);
-      if (!newPage) throw new Error('New Page not found');
-      
-      // Update the associated link
-      const link = await Link.findOne({ where: { pageId: menuItem.pageId } });
-      if (link) {
-        await link.update({ label: data.label || menuItem.label, url: newPage.link, pageId: newPage.id });
-      }
-    } else if (data.label) {
-      // Only update the label in the link if the pageId remains the same
-      const link = await Link.findOne({ where: { pageId: menuItem.pageId } });
-      if (link) await link.update({ label: data.label });
-    }
-
-    await menuItem.update(data);
+    const menuItem = await MenuItem.create({ menuId, label });
     return menuItem;
   } catch (error) {
-    console.error('Error in editMenuItem service:', error);
-    throw new Error('Failed to edit menu item');
+    console.error('Error adding menu item', error);
+    throw new Error('Error adding menu item');
   }
 };
 
-// Delete a menu item by ID
-exports.deleteMenuItem = async (id) => {
+// Edit a menu item by ID
+exports.editMenuItem = async (id, data) => {
   try {
-    const menuItem = await MenuItem.findByPk(id, {
-      include: [{ model: Page, as: 'page' }]
-    });
+    const menuItem = await MenuItem.findByPk(id);
+    if (!menuItem) return null;
+
+    menuItem.label = data.label;
+    await menuItem.save();
+    return menuItem;
+  } catch (error) {
+    console.error('Error updating menu item', error);
+    throw new Error('Error updating menu item');
+  }
+};
+
+// Delete a menu item based on its label
+exports.deleteMenuItemByLabel = async (label) => {
+  try {
+    const menuItem = await MenuItem.findOne({ where: { label }, include: [{ model: Page, as: 'page' }] });
 
     if (!menuItem) return null;
 
-    // Delete the link associated with the page
     const link = await Link.findOne({ where: { pageId: menuItem.pageId } });
     if (link) await link.destroy();
 
-    // Delete the page associated with the menu item (same URL)
     const page = menuItem.page;
     if (page) await page.destroy();
 
-    // Delete the menu item
     await menuItem.destroy();
-    return { message: 'Menu item, link, and page deleted successfully' };
+    return true;
   } catch (error) {
-    console.error('Error in deleteMenuItem service:', error);
-    throw new Error('Failed to delete menu item, link, and page');
+    console.error('Error deleting menu item', error);
+    throw new Error('Failed to delete menu item');
   }
 };
-
 
 // service.js
 exports.addLink = async (menuId, label) => {

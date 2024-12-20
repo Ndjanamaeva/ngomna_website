@@ -9,11 +9,12 @@ const linkController = require('../controllers/linkController');
 // Route to get all menus
 router.get('/api/menus', menuController.getAllMenus);
 
-// Menu Item Routes
+// Routes for managing menu items
 router.get('/api/menuitems/:menuId', menuController.getAllMenuItemsForMenu);
 router.post('/api/menuitems/:menuId', menuController.addMenuItemToMenu);
 router.put('/api/menuitems/:id', menuController.editMenuItem);
-router.delete('/api/menuitems/:id', menuController.deleteMenuItem);
+router.delete('/api/menuitems/label/:label', menuController.deleteMenuItem);  // Using label for deletion
+
 
 // Link Routes
 router.get('/api/links', linkController.getAllLinks);

@@ -31,7 +31,6 @@ export default function FeaturesPage() {
     const fetchMenuItems = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/menuitems/1');  // Fetching data from API
-        // Generate a frontend ID if the backend does not include it
         const menuItemsWithId = response.data.map((item, index) => ({
           ...item,
           id: index + 1,  // Generate frontend ID based on index (you could use a unique library for this as well)
@@ -45,11 +44,11 @@ export default function FeaturesPage() {
     fetchMenuItems();
   }, []);
 
-  // Handle delete action
-  const handleDelete = async (id) => {
+  // Handle delete action using the label
+  const handleDelete = async (label) => {
     try {
-      await axios.delete(`http://localhost:5000/api/menuitems/${id}`);  // Delete API request
-      setMenuItems(menuItems.filter(item => item.id !== id));  // Update state after deletion
+      await axios.delete(`http://localhost:5000/api/menuitems/label/${label}`);  // Delete API request using label
+      setMenuItems(menuItems.filter(item => item.label !== label));  // Update state after deletion
     } catch (error) {
       console.error('Error deleting menu item:', error);
     }
@@ -72,7 +71,6 @@ export default function FeaturesPage() {
       } else {
         // Add request
         const response = await axios.post('http://localhost:5000/api/menuitems/1', newMenuItem);  // Assuming backend creates a new item
-        // Add a unique frontend ID after creating the new item
         const newMenuItemWithId = { ...response.data, id: menuItems.length + 1 };
         setMenuItems([...menuItems, newMenuItemWithId]);  // Update state with newly added item
       }
@@ -110,31 +108,14 @@ export default function FeaturesPage() {
         </Button>
       </div>
 
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          boxSizing: 'border-box',
-          marginTop: '20px',
-          height: 'calc(100vh - 100px)',
-        }}
-      >
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', boxSizing: 'border-box', marginTop: '20px', height: 'calc(100vh - 100px)' }}>
         <Paper sx={{ width: '100%', maxWidth: 1000, overflow: 'hidden', height: '100%' }}>
           <TableContainer sx={{ maxHeight: '100%' }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
                   {columns.map((column) => (
-                    <TableCell
-                      key={column.id}
-                      align={column.align}
-                      style={{
-                        minWidth: column.minWidth,
-                        backgroundColor: 'rgb(223, 223, 223)',
-                        fontWeight: 'bold'
-                      }}
-                    >
+                    <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth, backgroundColor: 'rgb(223, 223, 223)', fontWeight: 'bold' }}>
                       {column.label}
                     </TableCell>
                   ))}
@@ -143,13 +124,13 @@ export default function FeaturesPage() {
               <TableBody>
                 {menuItems.map((item) => (
                   <TableRow hover role="checkbox" tabIndex={-1} key={item.id}>
-                    <TableCell>{item.id}</TableCell>  {/* Display the frontend-generated ID */}
+                    <TableCell>{item.id}</TableCell>
                     <TableCell>{item.label}</TableCell>
                     <TableCell align="center">
                       <Button variant="contained" color="primary" size="small" style={{ marginRight: 8, backgroundColor: 'rgb(75, 75, 75)' }} onClick={() => handleOpenForm(item)}>
                         Edit
                       </Button>
-                      <Button variant="contained" color="secondary" size="small" style={{ backgroundColor: 'red' }} onClick={() => handleDelete(item.id)}>
+                      <Button variant="contained" color="secondary" size="small" style={{ backgroundColor: 'red' }} onClick={() => handleDelete(item.label)}>
                         Delete
                       </Button>
                     </TableCell>
@@ -165,16 +146,7 @@ export default function FeaturesPage() {
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>{editMode ? 'Edit Menu Item' : 'Add Menu Item'}</DialogTitle>
         <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Menu Item Label"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={formData.label}
-            onChange={(e) => setFormData({ ...formData, label: e.target.value })}
-          />
+          <TextField autoFocus margin="dense" label="Menu Item Label" type="text" fullWidth variant="outlined" value={formData.label} onChange={(e) => setFormData({ ...formData, label: e.target.value })} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="primary">

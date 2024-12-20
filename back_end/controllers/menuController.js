@@ -32,7 +32,7 @@ exports.addMenuItemToMenu = async (req, res) => {
     }
 
     const newMenuItem = await menuService.addMenuItemToMenu(menuId, label);
-    res.status(201).json(newMenuItem);
+    res.status(201).json(newMenuItem); // Send the newly created items as response
   } catch (error) {
     res.status(500).json({ message: 'Error adding menu item', error });
   }

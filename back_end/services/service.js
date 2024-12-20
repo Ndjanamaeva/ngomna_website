@@ -24,14 +24,25 @@ exports.getAllMenuItemsForMenu = async (menuId) => {
   }
 };
 
-// Add a new menu item to a specific menu
+// Add a new menu item to a specific menu and create corresponding link and page
 exports.addMenuItemToMenu = async (menuId, label) => {
   try {
-    const menuItem = await MenuItem.create({ menuId, label });
-    return menuItem;
+    // Auto-generate URL from the label
+    const url = `/${label.toLowerCase().replace(/\s+/g, '-')}`;
+
+    // Create the page
+    const page = await Page.create({ name: label, url });
+
+    // Create the link
+    const link = await Link.create({ label, url: page.url, pageId: page.id });
+
+    // Create the menu item
+    const menuItem = await MenuItem.create({ menuId, label, pageId: page.id });
+
+    return { menuItem, page, link };
   } catch (error) {
-    console.error('Error adding menu item', error);
-    throw new Error('Error adding menu item');
+    console.error('Error adding menu item, link, and page:', error);
+    throw new Error('Failed to add menu item');
   }
 };
 
@@ -91,7 +102,6 @@ exports.addLink = async (menuId, label) => {
     throw new Error('Failed to add link');
   }
 };
-
 
 // Service function to update a link by ID
 exports.updateLink = async (id, label) => {

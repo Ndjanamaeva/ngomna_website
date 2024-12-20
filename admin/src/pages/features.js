@@ -1,3 +1,4 @@
+// features.js
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -13,7 +14,6 @@ import axios from 'axios';
 import { TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import '../styles/feature.css';
 
-// Add 'ID' column to the table columns
 const columns = [
   { id: 'id', label: 'ID', minWidth: 50 },
   { id: 'menuitem', label: 'Menu Item', minWidth: 150 },
@@ -26,29 +26,29 @@ export default function FeaturesPage() {
   const [formData, setFormData] = React.useState({ id: '', label: '' });
   const [editMode, setEditMode] = React.useState(false);
 
-  // Fetch menu items on component mount
+  // Fetch menu items
   React.useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/menuitems/1');  // Fetching data from API
-        const menuItemsWithId = response.data.map((item, index) => ({
+        const response = await axios.get('http://localhost:5000/api/menuitems/1');
+        // Adding a frontend-generated ID to each item
+        const itemsWithId = response.data.map((item, index) => ({
           ...item,
-          id: index + 1,  // Generate frontend ID based on index (you could use a unique library for this as well)
+          id: index + 1,  // Frontend-generated ID (using index + 1)
         }));
-        setMenuItems(menuItemsWithId);  // Store data in state
+        setMenuItems(itemsWithId);
       } catch (error) {
         console.error('Error fetching menu items:', error);
       }
     };
-
     fetchMenuItems();
   }, []);
 
-  // Handle delete action using the label
+  // Handle delete action
   const handleDelete = async (label) => {
     try {
-      await axios.delete(`http://localhost:5000/api/menuitems/label/${label}`);  // Delete API request using label
-      setMenuItems(menuItems.filter(item => item.label !== label));  // Update state after deletion
+      await axios.delete(`http://localhost:5000/api/menuitems/label/${label}`);
+      setMenuItems(menuItems.filter(item => item.label !== label));
     } catch (error) {
       console.error('Error deleting menu item:', error);
     }
@@ -62,21 +62,20 @@ export default function FeaturesPage() {
     }
 
     try {
-      let newMenuItem = { label: formData.label };
+      const newMenuItem = { label: formData.label };
 
       if (editMode) {
-        // Edit request
         await axios.put(`http://localhost:5000/api/menuitems/${formData.id}`, { label: formData.label });
-        setMenuItems(menuItems.map(item => (item.id === formData.id ? { ...item, label: formData.label } : item)));
+        setMenuItems(menuItems.map(item => item.id === formData.id ? { ...item, label: formData.label } : item));
       } else {
-        // Add request
-        const response = await axios.post('http://localhost:5000/api/menuitems/1', newMenuItem);  // Assuming backend creates a new item
-        const newMenuItemWithId = { ...response.data, id: menuItems.length + 1 };
-        setMenuItems([...menuItems, newMenuItemWithId]);  // Update state with newly added item
+        const response = await axios.post('http://localhost:5000/api/menuitems/1', newMenuItem);  // Send the creation request
+        // After adding, assign a frontend-generated ID
+        const newItem = { ...response.data, id: menuItems.length + 1 };  // Frontend-generated ID
+        setMenuItems([...menuItems, newItem]);  // Add the new item with the frontend-generated ID
       }
 
-      setOpen(false);  // Close dialog
-      setFormData({ id: '', label: '' });  // Reset form
+      setOpen(false);  // Close the dialog
+      setFormData({ id: '', label: '' });  // Reset form data
       setEditMode(false);  // Reset edit mode
     } catch (error) {
       console.error(editMode ? 'Error updating menu item' : 'Error adding menu item', error);
@@ -87,13 +86,13 @@ export default function FeaturesPage() {
   // Open the form in add/edit mode
   const handleOpenForm = (item = null) => {
     if (item) {
-      setEditMode(true);  // Set edit mode
-      setFormData({ id: item.id, label: item.label });  // Populate form with item data
+      setEditMode(true);
+      setFormData({ id: item.id, label: item.label });
     } else {
-      setEditMode(false);  // Set add mode
-      setFormData({ id: '', label: '' });  // Clear form data
+      setEditMode(false);
+      setFormData({ id: '', label: '' });
     }
-    setOpen(true);  // Open form dialog
+    setOpen(true);
   };
 
   return (
@@ -149,12 +148,8 @@ export default function FeaturesPage() {
           <TextField autoFocus margin="dense" label="Menu Item Label" type="text" fullWidth variant="outlined" value={formData.label} onChange={(e) => setFormData({ ...formData, label: e.target.value })} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit} color="primary">
-            {editMode ? 'Save' : 'Add'}
-          </Button>
+          <Button onClick={() => setOpen(false)} color="primary">Cancel</Button>
+          <Button onClick={handleSubmit} color="primary">{editMode ? 'Save' : 'Add'}</Button>
         </DialogActions>
       </Dialog>
     </Layout>

@@ -46,10 +46,10 @@ export default function CenteredTable() {
   }, []);
 
   // Handle delete action
-  const handleDelete = async (id) => {
+  const handleDelete = async (label) => {
     try {
-      await axios.delete(`http://localhost:5000/api/menuitems/${id}`);
-      setMenuItems(menuItems.filter((item) => item.id !== id));
+      await axios.delete(`http://localhost:5000/api/menuitems/label/${label}`);
+      setMenuItems(menuItems.filter(item => item.label !== label));
     } catch (error) {
       console.error('Error deleting menu item:', error);
     }
@@ -154,7 +154,7 @@ export default function CenteredTable() {
                         color="secondary"
                         size="small"
                         style={{ backgroundColor: 'red' }}
-                        onClick={() => handleDelete(item.id)}
+                        onClick={() => handleDelete(item.label)}
                       >
                         Delete
                       </Button>

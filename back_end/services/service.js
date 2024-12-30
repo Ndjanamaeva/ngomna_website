@@ -150,3 +150,41 @@ exports.deleteLinkByLabel = async (label) => {
     throw new Error('Failed to delete link');
   }
 };
+
+// service.js
+
+exports.updateLinkAndDependencies = async (id, newLabel, menuId) => {
+  try {
+    // Find the link associated with the given id
+    const link = await Link.findOne({
+      where: { id },
+      include: [{ model: Page, as: 'page' }]
+    });
+
+    if (!link) throw new Error('Link not found');
+
+    // Update the page associated with the link
+    const page = link.page;
+    page.name = newLabel;
+    page.url = `/${newLabel.toLowerCase().replace(/\s+/g, '-')}`; // Re-generate the URL
+    await page.save();
+
+    // Update the link associated with the page
+    link.label = newLabel;
+    link.url = page.url; // Update the link's URL
+    await link.save();
+
+    // Optionally update the menu item if required
+    const menuItem = await MenuItem.findOne({ where: { pageId: page.id } });
+    if (menuItem) {
+      menuItem.label = newLabel;
+      menuItem.menuId = menuId; // Update the menuId if necessary
+      await menuItem.save();
+    }
+
+    return { link, menuItem, page };
+  } catch (error) {
+    console.error('Error updating link, menu item, and page:', error);
+    throw new Error('Failed to update link');
+  }
+};

@@ -15,12 +15,10 @@ router.post('/api/menuitems/:menuId', menuController.addMenuItemToMenu);
 router.delete('/api/menuitems/label/:label', menuController.deleteMenuItem);  // Using label for deletion
 router.put('/api/menuitems/label/:label', menuController.updateMenuItem);
 
-
-
 // Link Routes
 router.get('/api/links', linkController.getAllLinks);
 router.post('/api/links', linkController.addLink);
 router.delete('/api/links/label/:label', linkController.deleteLink);
-
+router.put('/api/links/:id', linkController.updateLink); // Route to update the link
 
 module.exports = router;

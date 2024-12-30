@@ -44,4 +44,22 @@ exports.deleteLink = async (req, res) => {
   }
 };
 
+// linkController.js
 
+exports.updateLink = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { label, menuId } = req.body;
+
+    if (!label || !menuId) {
+      return res.status(400).json({ message: 'Both label and menuId are required' });
+    }
+
+    const { link, menuItem, page } = await linkService.updateLinkAndDependencies(id, label, menuId);
+
+    res.status(200).json({ message: 'Link, MenuItem, and Page updated successfully', link, menuItem, page });
+  } catch (error) {
+    console.error('Error updating link:', error);
+    res.status(500).json({ message: 'Error updating link', error: error.message });
+  }
+};

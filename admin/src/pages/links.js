@@ -83,7 +83,7 @@ const handleSubmit = async () => {
         menuId: formData.menuId,
       });
 
-      const { link, menuItem, page } = response.data;
+      const { link } = response.data;
 
       // Update the links list with the updated data
       setLinks(links.map(item => (item.id === link.id ? link : item)));

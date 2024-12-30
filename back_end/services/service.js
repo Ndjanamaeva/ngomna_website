@@ -67,6 +67,38 @@ exports.deleteMenuItemByLabel = async (label) => {
   }
 };
 
+// Update a menu item, link, and page
+exports.updateMenuItemAndDependencies = async (oldLabel, newLabel) => {
+  try {
+    const menuItem = await MenuItem.findOne({ where: { label: oldLabel }, include: [{ model: Page, as: 'page' }] });
+
+    if (!menuItem) return null;
+
+    const page = menuItem.page;
+    if (page) {
+      page.name = newLabel;
+      page.url = `/${newLabel.toLowerCase().replace(/\s+/g, '-')}`;
+      await page.save();
+    }
+
+    const link = await Link.findOne({ where: { pageId: page.id } });
+    if (link) {
+      link.label = newLabel;
+      link.url = page.url;
+      await link.save();
+    }
+
+    menuItem.label = newLabel;
+    await menuItem.save();
+
+    return { menuItem, page, link };
+  } catch (error) {
+    console.error('Error updating menu item, link, and page:', error);
+    throw new Error('Failed to update menu item');
+  }
+};
+
+
 // service.js
 exports.addLink = async (menuId, label) => {
   try {

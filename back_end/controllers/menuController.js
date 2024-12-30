@@ -56,3 +56,24 @@ exports.deleteMenuItem = async (req, res) => {
   }
 };
 
+// Update a menu item, link, and page
+exports.updateMenuItem = async (req, res) => {
+  try {
+    const { label } = req.params; // Existing label to identify the menu item
+    const { label: newLabel } = req.body; // New label for update
+
+    if (!newLabel) {
+      return res.status(400).json({ message: 'New label is required' });
+    }
+
+    const updatedData = await menuService.updateMenuItemAndDependencies(label, newLabel);
+
+    if (!updatedData) {
+      return res.status(404).json({ message: 'Menu item not found' });
+    }
+
+    res.json(updatedData);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating menu item', error });
+  }
+};

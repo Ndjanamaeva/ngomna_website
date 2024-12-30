@@ -13,6 +13,8 @@ router.get('/api/menus', menuController.getAllMenus);
 router.get('/api/menuitems/:menuId', menuController.getAllMenuItemsForMenu);
 router.post('/api/menuitems/:menuId', menuController.addMenuItemToMenu);
 router.delete('/api/menuitems/label/:label', menuController.deleteMenuItem);  // Using label for deletion
+router.put('/api/menuitems/label/:label', menuController.updateMenuItem);
+
 
 
 // Link Routes

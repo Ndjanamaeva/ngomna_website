@@ -1,4 +1,3 @@
-//header.js
 import React, { useState, useEffect, useCallback } from 'react';
 import { AppBar, Box, Divider, Drawer, IconButton, Toolbar, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -16,25 +15,22 @@ const Header = () => {
   const [language, setLanguage] = useState('english');
   const [menuItems, setMenuItems] = useState([]);
 
-  const fetchMenuItems = useCallback(async () => {
+  const fetchMenuItems = useCallback(async (menuId) => {
     try {
-      const response = await axios.get('http://localhost:5000/menus/1/menu-items');
+      const response = await axios.get(`http://localhost:5000/api/menuitems/${menuId}`);
       setMenuItems(response.data);
     } catch (error) {
       console.error('Failed to fetch menu items:', error);
     }
   }, []);
 
-  useEffect(() => {
-    fetchMenuItems();
-  }, [fetchMenuItems]);
-
   const handleDrawerToggle = () => {
     setMobileOpen(prevState => !prevState);
   };
 
-  const handleMenuClick = (event) => {
+  const handleMenuClick = (event, menuId) => {
     setAnchorEl(event.currentTarget);
+    fetchMenuItems(menuId); // Fetch menu items for the selected menu
   };
 
   const handleMenuClose = () => {
@@ -56,7 +52,11 @@ const Header = () => {
           <Link to="/">Home</Link>
         </li>
         <li>
-          <Link aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenuClick}>
+          <Link
+            aria-controls="simple-menu"
+            aria-haspopup="true"
+            onClick={(e) => handleMenuClick(e, 1)} // Features menu ID
+          >
             Features
           </Link>
           <Menu
@@ -67,14 +67,22 @@ const Header = () => {
             onClose={handleMenuClose}
           >
             {menuItems.map((item) => (
-              <MenuItem key={item.id} sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }} onClick={handleMenuClose}>
+              <MenuItem
+                key={item.id}
+                sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }}
+                onClick={handleMenuClose}
+              >
                 <Link className="menu-item-link" to={item.link}>{item.label}</Link>
               </MenuItem>
             ))}
           </Menu>
         </li>
         <li>
-        <Link aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenuClick}>
+          <Link
+            aria-controls="simple-menu"
+            aria-haspopup="true"
+            onClick={(e) => handleMenuClick(e, 2)} // About menu ID
+          >
             About
           </Link>
           <Menu
@@ -85,14 +93,22 @@ const Header = () => {
             onClose={handleMenuClose}
           >
             {menuItems.map((item) => (
-              <MenuItem key={item.id} sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }} onClick={handleMenuClose}>
+              <MenuItem
+                key={item.id}
+                sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }}
+                onClick={handleMenuClose}
+              >
                 <Link className="menu-item-link" to={item.link}>{item.label}</Link>
               </MenuItem>
             ))}
           </Menu>
         </li>
         <li>
-        <Link aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenuClick}>
+          <Link
+            aria-controls="simple-menu"
+            aria-haspopup="true"
+            onClick={(e) => handleMenuClick(e, 3)} // Contact menu ID
+          >
             Contact
           </Link>
           <Menu
@@ -103,7 +119,11 @@ const Header = () => {
             onClose={handleMenuClose}
           >
             {menuItems.map((item) => (
-              <MenuItem key={item.id} sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }} onClick={handleMenuClose}>
+              <MenuItem
+                key={item.id}
+                sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }}
+                onClick={handleMenuClose}
+              >
                 <Link className="menu-item-link" to={item.link}>{item.label}</Link>
               </MenuItem>
             ))}
@@ -126,7 +146,13 @@ const Header = () => {
         boxShadow: '0 0 1px rgba(85, 166, 246, 0.1), 1px 1.5px 2px -1px rgba(85, 166, 246, 0.15), 4px 4px 12px -2.5px rgba(85, 166, 246, 0.15)'
       }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <IconButton color="black" aria-label="open drawer" edge="start" sx={{ mr: 2, display: { sm: "none" } }} onClick={handleDrawerToggle}>
+          <IconButton
+            color="black"
+            aria-label="open drawer"
+            edge="start"
+            sx={{ mr: 2, display: { sm: "none" } }}
+            onClick={handleDrawerToggle}
+          >
             <MenuIcon />
           </IconButton>
           <Link to="/">
@@ -138,7 +164,12 @@ const Header = () => {
                 <Link to="/">Home</Link>
               </li>
               <li>
-                <Link aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenuClick} style={{ display: 'flex', alignItems: 'center' }}>
+                <Link
+                  aria-controls="simple-menu"
+                  aria-haspopup="true"
+                  onClick={(e) => handleMenuClick(e, 1)} // Features menu ID
+                  style={{ display: 'flex', alignItems: 'center' }}
+                >
                   Features
                   {Boolean(anchorEl) ? <ArrowDropUpIcon sx={{ color: "black" }} /> : <ArrowDropDownIcon sx={{ color: "black" }} />}
                 </Link>
@@ -150,14 +181,23 @@ const Header = () => {
                   onClose={handleMenuClose}
                 >
                   {menuItems.map((item) => (
-                    <MenuItem key={item.id} sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }} onClick={handleMenuClose}>
+                    <MenuItem
+                      key={item.id}
+                      sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }}
+                      onClick={handleMenuClose}
+                    >
                       <Link className="menu-item-link" to={item.link}>{item.label}</Link>
                     </MenuItem>
                   ))}
                 </Menu>
               </li>
               <li>
-              <Link aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenuClick} style={{ display: 'flex', alignItems: 'center' }}>
+                <Link
+                  aria-controls="simple-menu"
+                  aria-haspopup="true"
+                  onClick={(e) => handleMenuClick(e, 2)} // About menu ID
+                  style={{ display: 'flex', alignItems: 'center' }}
+                >
                   About
                   {Boolean(anchorEl) ? <ArrowDropUpIcon sx={{ color: "black" }} /> : <ArrowDropDownIcon sx={{ color: "black" }} />}
                 </Link>
@@ -169,14 +209,23 @@ const Header = () => {
                   onClose={handleMenuClose}
                 >
                   {menuItems.map((item) => (
-                    <MenuItem key={item.id} sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }} onClick={handleMenuClose}>
+                    <MenuItem
+                      key={item.id}
+                      sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }}
+                      onClick={handleMenuClose}
+                    >
                       <Link className="menu-item-link" to={item.link}>{item.label}</Link>
                     </MenuItem>
                   ))}
                 </Menu>
               </li>
               <li>
-              <Link aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenuClick} style={{ display: 'flex', alignItems: 'center' }}>
+                <Link
+                  aria-controls="simple-menu"
+                  aria-haspopup="true"
+                  onClick={(e) => handleMenuClick(e, 3)} // Contact menu ID
+                  style={{ display: 'flex', alignItems: 'center' }}
+                >
                   Contact
                   {Boolean(anchorEl) ? <ArrowDropUpIcon sx={{ color: "black" }} /> : <ArrowDropDownIcon sx={{ color: "black" }} />}
                 </Link>
@@ -188,7 +237,11 @@ const Header = () => {
                   onClose={handleMenuClose}
                 >
                   {menuItems.map((item) => (
-                    <MenuItem key={item.id} sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }} onClick={handleMenuClose}>
+                    <MenuItem
+                      key={item.id}
+                      sx={{ "&:hover": { backgroundColor: "rgb(206, 255, 210)" } }}
+                      onClick={handleMenuClose}
+                    >
                       <Link className="menu-item-link" to={item.link}>{item.label}</Link>
                     </MenuItem>
                   ))}
@@ -198,7 +251,23 @@ const Header = () => {
                 <Link onClick={toggleLanguage}>{language === 'english' ? 'French' : 'English'}</Link>
               </li>
               <Link to="/download">
-                <Button type="submit" variant="contained" color="primary" sx={{ flexShrink: 0, borderRadius: 2, fontFamily: "Arial", fontSize: '17px', background: 'linear-gradient(#001F0E, #00FF66)', color: "white", "&:hover": { background: 'linear-gradient(#001F0E, #00FF66)', boxShadow: "0px 4px 20px rgba(173, 255, 47, 0.5)" } }}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    flexShrink: 0,
+                    borderRadius: 2,
+                    fontFamily: "Arial",
+                    fontSize: '17px',
+                    background: 'linear-gradient(#001F0E, #00FF66)',
+                    color: "white",
+                    "&:hover": {
+                      background: 'linear-gradient(#001F0E, #00FF66)',
+                      boxShadow: "0px 4px 20px rgba(173, 255, 47, 0.5)"
+                    }
+                  }}
+                >
                   DOWNLOAD
                 </Button>
               </Link>
@@ -207,7 +276,15 @@ const Header = () => {
         </Toolbar>
       </AppBar>
       <Box component="nav">
-        <Drawer variant="temporary" open={mobileOpen} onClose={handleDrawerToggle} sx={{ display: { xs: "block", sm: "none" }, "& .MuiDrawer-paper": { boxSizing: "border-box", width: "120px" } }}>
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          sx={{
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": { boxSizing: "border-box", width: "120px" }
+          }}
+        >
           {drawer}
         </Drawer>
       </Box>

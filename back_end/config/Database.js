@@ -116,7 +116,7 @@ sequelize.sync({ force: true }) // This will recreate the tables
       { name: 'Vision', url: '/vision' },
       { name: 'Perspectives', url: '/perspectives' },
       { name: 'WhatsApp', url: '/whatsapp' },
-      { name: 'E-mail', url: '/email' },
+      { name: 'Email', url: '/email' },
       { name: 'Facebook', url: '/facebook' }
     ]);
 
@@ -137,7 +137,7 @@ sequelize.sync({ force: true }) // This will recreate the tables
       { label: 'vision', url: '/vision', pageId: pages[10].id },
       { label: 'perspectives', url: '/perspectives', pageId: pages[11].id },
       { label: 'whatsapp', url: '/whatsapp', pageId: pages[12].id  },
-      { label: 'e-mail', url: '/email', pageId: pages[13].id  },
+      { label: 'email', url: '/email', pageId: pages[13].id  },
       { label: 'facebook', url: '/facebook', pageId: pages[14].id  }
     ]);
 
@@ -171,10 +171,10 @@ sequelize.sync({ force: true }) // This will recreate the tables
       { label: 'DGI', menuId: featuresMenu.id, url: '/DGI', pageId: pages[8].id },
       { label: 'mission', menuId: aboutMenu.id, url: '/mission', pageId: pages[9].id },
       { label: 'vision', menuId: aboutMenu.id, url: '/vision', pageId: pages[10].id },
-      { label: 'perspectives', menuId: aboutMenu.id, url: '/payslips', pageId: pages[11].id },
+      { label: 'perspectives', menuId: aboutMenu.id, url: '/perspectives', pageId: pages[11].id },
       { label: 'whatsapp', menuId: contactMenu.id, url: '/whatsapp', pageId: pages[12].id },
-      { label: 'e-mail', menuId: contactMenu.id, url: '/e-mail', pageId: pages[13].id },
-      { label: 'facebook', menuId: contactMenu.id, url: '/payslips', pageId: pages[14].id },
+      { label: 'email', menuId: contactMenu.id, url: '/email', pageId: pages[13].id },
+      { label: 'facebook', menuId: contactMenu.id, url: '/facebook', pageId: pages[14].id },
     ]);
 
     console.log('Menu with menu items created:', featuresMenu.toJSON());

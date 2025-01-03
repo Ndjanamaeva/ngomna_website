@@ -18,7 +18,12 @@ const Header = () => {
   const fetchMenuItems = useCallback(async (menuId) => {
     try {
       const response = await axios.get(`http://localhost:5000/api/menuitems/${menuId}`);
-      setMenuItems(response.data);
+      // Set menu items with the correct label and link
+      setMenuItems(response.data.map(item => ({
+        id: item.id,
+        label: item.label,
+        link: item.url,  // Make sure this matches the URL field from the database
+      })));
     } catch (error) {
       console.error('Failed to fetch menu items:', error);
     }
@@ -248,7 +253,9 @@ const Header = () => {
                 </Menu>
               </li>
               <li>
-                <Link onClick={toggleLanguage}>{language === 'english' ? 'French' : 'English'}</Link>
+                <Link onClick={toggleLanguage}>
+                  {language === 'english' ? 'French' : 'English'}
+                </Link>
               </li>
               <Link to="/download">
                 <Button
@@ -281,15 +288,16 @@ const Header = () => {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           sx={{
-            display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": { boxSizing: "border-box", width: "120px" }
+            display: { xs: 'block', sm: 'none' },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: 240,
+            },
           }}
         >
           {drawer}
         </Drawer>
       </Box>
-      <Box sx={{ p: 2 }}></Box>
-      <Toolbar />
     </Box>
   );
 };

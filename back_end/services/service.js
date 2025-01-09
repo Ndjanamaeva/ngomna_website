@@ -107,8 +107,8 @@ exports.addLink = async (menuId, label) => {
     // Create page
     const page = await Page.create({ name: label, url });
 
-    // Create link associated with the page
-    const link = await Link.create({ label, url: page.url, pageId: page.id });
+    // Create link associated with the page and menu
+    const link = await Link.create({ label, menuId, url: page.url, pageId: page.id });
 
     // Create MenuItem associated with the link and menu
     const menuItem = await MenuItem.create({ label, menuId, pageId: page.id });

@@ -188,3 +188,17 @@ exports.updateLinkAndDependencies = async (id, newLabel, menuId) => {
     throw new Error('Failed to update link');
   }
 };
+
+// Get all links for a specific menuId
+exports.getLinksByMenuId = async (menuId) => {
+  try {
+    // Fetch links based on menuId
+    const links = await Link.findAll({
+      where: { menuId }
+    });
+    return links;
+  } catch (error) {
+    console.error('Error fetching links by menuId:', error);
+    throw new Error('Failed to fetch links');
+  }
+};

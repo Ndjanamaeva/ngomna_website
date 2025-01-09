@@ -1,3 +1,5 @@
+//linkController.js
+
 const linkService = require('../services/service');
 
 // Get all links
@@ -61,5 +63,16 @@ exports.updateLink = async (req, res) => {
   } catch (error) {
     console.error('Error updating link:', error);
     res.status(500).json({ message: 'Error updating link', error: error.message });
+  }
+};
+
+// Get all links for a specific menu
+exports.getLinksByMenuId = async (req, res) => {
+  try {
+    const { menuId } = req.params;
+    const links = await linkService.getLinksByMenuId(menuId);
+    res.json(links);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching links', error });
   }
 };

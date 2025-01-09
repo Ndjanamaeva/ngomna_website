@@ -17,6 +17,7 @@ router.put('/api/menuitems/label/:label', menuController.updateMenuItem);
 
 // Link Routes
 router.get('/api/links', linkController.getAllLinks);
+router.get('/api/links/:menuId', linkController.getLinksByMenuId);
 router.post('/api/links', linkController.addLink);
 router.delete('/api/links/label/:label', linkController.deleteLink);
 router.put('/api/links/:id', linkController.updateLink); // Route to update the link

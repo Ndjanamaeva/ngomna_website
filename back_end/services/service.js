@@ -46,7 +46,6 @@ exports.addMenuItemToMenu = async (menuId, label) => {
 };
 
 
-
 // Delete a menu item based on its label
 exports.deleteMenuItemByLabel = async (label) => {
   try {
@@ -100,7 +99,6 @@ exports.updateMenuItemAndDependencies = async (oldLabel, newLabel) => {
 };
 
 
-// service.js
 exports.addLink = async (menuId, label) => {
   try {
     const url = `/${label.toLowerCase().replace(/\s+/g, '-')}`;  // Auto-generate URL
@@ -111,8 +109,8 @@ exports.addLink = async (menuId, label) => {
     // Create link associated with the page and menu
     const link = await Link.create({ label, menuId, url: page.url, pageId: page.id });
 
-    // Create MenuItem associated with the link and menu
-    const menuItem = await MenuItem.create({ label, menuId, pageId: page.id });
+    // Create MenuItem associated with the link and menu, including the url
+    const menuItem = await MenuItem.create({ label, menuId, pageId: page.id, url: link.url }); // Include url here
 
     return { link, menuItem, page };
   } catch (error) {
@@ -120,6 +118,7 @@ exports.addLink = async (menuId, label) => {
     throw new Error('Failed to add link');
   }
 };
+
 
 // Service function to get all links
 exports.getAllLinks = async () => {

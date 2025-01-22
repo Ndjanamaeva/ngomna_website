@@ -25,30 +25,26 @@ exports.getAllMenuItemsForMenu = async (menuId) => {
 };
 
 // Add a new menu item to a specific menu and create corresponding link and page
-// service.js
 exports.addMenuItemToMenu = async (menuId, label) => {
   try {
-    // Auto-generate URL from the label
     const url = `/${label.toLowerCase().replace(/\s+/g, '-')}`;
-
-    // Create the page
     const page = await Page.create({ name: label, url });
     console.log('Page created:', page);
 
-    // Create the link
-    const link = await Link.create({ label, url: page.url, pageId: page.id });
+    // Include menuId when creating the link
+    const link = await Link.create({ label, url: page.url, pageId: page.id, menuId }); 
     console.log('Link created:', link);
 
-    // Create the menu item with the generated URL
-    const menuItem = await MenuItem.create({ menuId, label, url: url, pageId: page.id }); // Include url here
+    const menuItem = await MenuItem.create({ menuId, label, url, pageId: page.id });
     console.log('Menu item created:', menuItem);
 
-    return { menuItem, page, link }; // Return all created items
+    return { menuItem, page, link };
   } catch (error) {
     console.error('Error adding menu item, link, and page:', error);
     throw new Error('Failed to add menu item');
   }
 };
+
 
 
 // Delete a menu item based on its label

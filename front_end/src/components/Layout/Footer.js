@@ -26,9 +26,7 @@ const StyledLink = styled(Link)({
 
   '&:hover': {
     color: 'green',
-    fontSize: '17px',
     textDecoration: 'underline',
-    textDecorationColor: 'green',
   },
 });
 
@@ -63,7 +61,7 @@ function Copyright() {
           color: 'green',
           textDecoration: 'none',
           fontFamily: 'Arial',
-          '&:hover': { textDecoration: 'underline', textDecorationColor: 'green' },
+          '&:hover': { textDecoration: 'underline' },
         }}
         href='/'>
         nGomna
@@ -111,7 +109,7 @@ export default function Footer() {
         textAlign: { sm: 'center', md: 'left' },
         mt: -8,
         backgroundColor: 'white',
-        height: '250px',
+        height: 'auto', // Changed to auto to accommodate content
       }}
     >
       <Box
@@ -120,7 +118,7 @@ export default function Footer() {
           flexDirection: { xs: 'column', sm: 'row' },
           width: '100%',
           justifyContent: 'space-between',
-          height: '250px',
+          height: 'auto', // Changed to auto to accommodate content
         }}
       >
         <Box
@@ -132,25 +130,19 @@ export default function Footer() {
           }}
         >
           <Box sx={{ width: { xs: '100%', sm: '30%' } }}>
-            <Box sx={{ ml: '-15px' }}>
-              <Link href="https://minfi.gov.cm/en/home/">
-                <img src={minfi_logo} style={minfiLogoStyle} alt="logo of minfi" />
-              </Link>
-            </Box>
+            <Link href="https://minfi.gov.cm/en/home/">
+              <img src={minfi_logo} style={minfiLogoStyle} alt="logo of minfi" />
+            </Link>
           </Box>
           <Box sx={{ width: { xs: '100%', sm: '30%' } }}>
-            <Box sx={{ ml: '-15px' }}>
-              <Link href="https://www.cenadi.cm/">
-                <img src={cenadi_logo} style={cenadiLogoStyle} alt="logo of cenadi" />
-              </Link>
-            </Box>
+            <Link href="https://www.cenadi.cm/">
+              <img src={cenadi_logo} style={cenadiLogoStyle} alt="logo of cenadi" />
+            </Link>
           </Box>
           <Box sx={{ width: { xs: '100%', sm: '10%' } }}>
-            <Box sx={{ ml: '-150px' }}>
-              <Link href="/">
-                <img src={ngomna_logo} style={ngomnaLogoStyle} alt="logo of ngomna" />
-              </Link>
-            </Box>
+            <Link href="/">
+              <img src={ngomna_logo} style={ngomnaLogoStyle} alt="logo of ngomna" />
+            </Link>
           </Box>
         </Box>
 
@@ -216,7 +208,7 @@ export default function Footer() {
             <MailIcon />
           </IconButton>
           <IconButton
-            href="https://www.facebook.com/profile.php?id=61550797871692"
+            href="https://facebook.com"
             aria-label="facebook"
             sx={{ alignSelf: 'center', '&:hover': { color: 'green' } }}
           >

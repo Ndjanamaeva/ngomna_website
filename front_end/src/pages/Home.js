@@ -1,5 +1,6 @@
 import React from 'react';
-import Layout from './../components/Layout/Layout';
+import Header from '../components/Layout/Header';
+import Footer from '../components/Layout/Footer';
 import HeroSection from '../pages/HeroSection';
 import Aboutngomna from './Boxes';
 import Carousel from '../pages/Carousel'
@@ -9,7 +10,8 @@ import { Divider } from '@mui/material';
 
 const Home = () => {
   return (
-    <Layout>
+    <div className='container'>
+      <Header/>
       <HeroSection/>
       <Divider/>
       <br/>
@@ -26,8 +28,9 @@ const Home = () => {
       <br/>
       <br/>
       <FAQs/>
-      <Divider />
-    </Layout>
+      <Divider/>
+      <Footer/>
+    </div>
   )
 }
 

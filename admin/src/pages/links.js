@@ -15,7 +15,7 @@ import '../styles/feature.css';
 
 // Table columns definition
 const columns = [
-  { id: 'id', label: 'ID', minWidth: 50 },  // ID column
+  { id: 'number', label: 'N°', minWidth: 50 }, // N° column
   { id: 'link', label: 'Link', minWidth: 150 },
   { id: 'actions', label: 'Actions', minWidth: 100, align: 'center' },
 ];
@@ -61,50 +61,48 @@ export default function CenteredTable() {
   };
 
   // Handle form submission (Add or Edit link)
-  // links.js
-
-const handleSubmit = async () => {
-  if (!formData.label.trim()) {
-    alert('Label is required');
-    return;
-  }
-
-  if (!formData.menuId) {
-    alert('Please select a menu');
-    return;
-  }
-
-  try {
-    let response;
-    if (formData.id) {
-      // Edit existing link
-      response = await axios.put(`http://localhost:5000/api/links/${formData.id}`, {
-        label: formData.label,
-        menuId: formData.menuId,
-      });
-
-      const { link } = response.data;
-
-      // Update the links list with the updated data
-      setLinks(links.map(item => (item.id === link.id ? link : item)));
-    } else {
-      // Add new link
-      response = await axios.post('http://localhost:5000/api/links', {
-        label: formData.label,
-        menuId: formData.menuId,
-      });
-
-      const { link } = response.data;
-      setLinks([...links, { id: link.id, label: link.label }]);
+  const handleSubmit = async () => {
+    if (!formData.label.trim()) {
+      alert('Label is required');
+      return;
     }
 
-    setOpen(false);
-    setFormData({ id: '', label: '', menuId: '' });
-  } catch (error) {
-    console.error('Error adding/updating link', error);
-    alert(error.message || 'An error occurred. Please try again.');
-  }
-};
+    if (!formData.menuId) {
+      alert('Please select a menu');
+      return;
+    }
+
+    try {
+      let response;
+      if (formData.id) {
+        // Edit existing link
+        response = await axios.put(`http://localhost:5000/api/links/${formData.id}`, {
+          label: formData.label,
+          menuId: formData.menuId,
+        });
+
+        const { link } = response.data;
+
+        // Update the links list with the updated data
+        setLinks(links.map(item => (item.id === link.id ? link : item)));
+      } else {
+        // Add new link
+        response = await axios.post('http://localhost:5000/api/links', {
+          label: formData.label,
+          menuId: formData.menuId,
+        });
+
+        const { link } = response.data;
+        setLinks([...links, { id: link.id, label: link.label }]);
+      }
+
+      setOpen(false);
+      setFormData({ id: '', label: '', menuId: '' });
+    } catch (error) {
+      console.error('Error adding/updating link', error);
+      alert(error.message || 'An error occurred. Please try again.');
+    }
+  };
 
   // Handle form open for add
   const handleOpenForm = () => {
@@ -177,9 +175,9 @@ const handleSubmit = async () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {links.map((item) => (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={item.id}>
-                    <TableCell>{item.id}</TableCell>  {/* Display the frontend-generated ID */}
+                {links.map((item, index) => (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={item.label}>
+                    <TableCell>{index + 1}</TableCell> {/* Auto-increment N° */}
                     <TableCell>{item.label}</TableCell>
                     <TableCell align="center">
                       {/* Edit Button */}

@@ -13,8 +13,9 @@ import axios from 'axios';
 import { TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import '../styles/feature.css';
 
+// Table columns definition
 const columns = [
-  { id: 'id', label: 'ID', minWidth: 50 },
+  { id: 'number', label: 'N°', minWidth: 50 }, // N° column
   { id: 'menuitem', label: 'Menu Item', minWidth: 150 },
   { id: 'actions', label: 'Actions', minWidth: 200, align: 'center' },
 ];
@@ -31,11 +32,7 @@ export default function CenteredTable() {
     const fetchMenuItems = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/menuitems/3');
-        const itemsWithId = response.data.map((item, index) => ({
-          ...item,
-          id: index + 1,
-        }));
-        setMenuItems(itemsWithId);
+        setMenuItems(response.data);
       } catch (error) {
         console.error('Error fetching menu items:', error);
       }
@@ -63,8 +60,7 @@ export default function CenteredTable() {
     try {
       const newMenuItem = { label: formData.label };
       const response = await axios.post('http://localhost:5000/api/menuitems/3', newMenuItem);
-      const newItem = { ...response.data, id: menuItems.length + 1 };
-      setMenuItems([...menuItems, newItem]);
+      setMenuItems([...menuItems, response.data]);
 
       setOpen(false);
       setFormData({ label: '' });
@@ -99,7 +95,7 @@ export default function CenteredTable() {
       await axios.put(`http://localhost:5000/api/menuitems/label/${currentEdit.label}`, updatedData);
 
       setMenuItems(menuItems.map(item =>
-        item.id === currentEdit.id ? { ...item, label: formData.label } : item
+        item.label === currentEdit.label ? { ...item, label: formData.label } : item
       ));
 
       setEditOpen(false);
@@ -135,9 +131,9 @@ export default function CenteredTable() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {menuItems.map((item) => (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={item.id}>
-                    <TableCell>{item.id}</TableCell>
+                {menuItems.map((item, index) => (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={item.label}>
+                    <TableCell>{index + 1}</TableCell> {/* Auto-increment N° */}
                     <TableCell>{item.label}</TableCell>
                     <TableCell align="center">
                       <Button variant="contained" color="primary" size="small" style={{ marginRight: '8px' }} onClick={() => handleOpenEditForm(item)}>Edit</Button>

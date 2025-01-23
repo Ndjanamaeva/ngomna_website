@@ -59,7 +59,8 @@ export default function FeaturesPage() {
     try {
       const newMenuItem = { label: formData.label };
       const response = await axios.post('http://localhost:5000/api/menuitems/1', newMenuItem);
-      setMenuItems([...menuItems, response.data]);
+      const { menuItem } = response.data; // Ensure the API returns the new item as 'menuItem'
+      setMenuItems([...menuItems, menuItem]); // Update state with the new item
 
       setOpen(false);
       setFormData({ label: '' });
@@ -91,7 +92,6 @@ export default function FeaturesPage() {
 
     try {
       const updatedData = { label: formData.label };
-
       await axios.put(`http://localhost:5000/api/menuitems/label/${currentEdit.label}`, updatedData);
 
       setMenuItems(menuItems.map(item =>

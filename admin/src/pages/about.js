@@ -57,7 +57,8 @@ export default function CenteredTable() {
     try {
       const newMenuItem = { label: formData.label };
       const response = await axios.post('http://localhost:5000/api/menuitems/2', newMenuItem);
-      setMenuItems([...menuItems, response.data]);
+      const { menuItem } = response.data; // Ensure the API returns the new item as 'menuItem'
+      setMenuItems([...menuItems, menuItem]); // Update state with the new item
 
       setOpen(false);
       setFormData({ label: '' });
@@ -167,3 +168,4 @@ export default function CenteredTable() {
     </Layout>
   );
 }
+

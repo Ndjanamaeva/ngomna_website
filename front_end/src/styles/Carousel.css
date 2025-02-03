@@ -6,22 +6,13 @@
   margin-top: -120px;
 }
 
-.carousel-title.animate h2 {
-  font-family: Arial;
-  font-weight: lighter;
-  color: black;
-  animation: slideInUp 5.0s infinite;
-  margin-top: 100px;
-  font-size: 29px;
-}
-
 .swiper {
-  width: 300px;
-  height: 500px;
+  width: 280px;
+  height: 480px;
   position: relative;
   top: 30px;
   margin-right: 150px;
-  margin-top: -150px;
+  margin-top: -100px;
 }
 
 .swiper-slide {

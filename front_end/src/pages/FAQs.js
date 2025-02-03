@@ -92,6 +92,7 @@ export default function FAQ() {
           fontSize: '29px',
           width: { sm: '100%', md: '60%' },
           textAlign: { sm: 'left', md: 'center' },
+          marginTop: '-50px',
         }}
       >
         Frequently asked questions
@@ -203,14 +204,14 @@ export default function FAQ() {
         </Accordion>
       </Box>
       <br />
-      <Typography sx={{ fontSize: '22px', color: "black", fontFamily: "Arial"}} variant="h4" component="h2" gutterBottom>
+      <Typography sx={{ marginTop: '60px', fontSize: '29px', color: "black", fontFamily: "Arial"}} variant="h4" component="h2">
         Any other Problem?
       </Typography>
       <Typography sx={{ fontSize: '19px', textAlign: 'center' }} variant="body2" color="grey" mb={2}>
         <p>Please type your problem below</p>
         <p>A confirmation will be sent to your email</p>
       </Typography>
-      <Stack direction="row" spacing={2} useFlexGap>
+      <Stack direction="row" spacing={2} useFlexGap sx={{marginBottom: '100px'}}>
         <CustomTextField
           sx={{ backgroundColor: "white" }}
           id="outlined-basic"

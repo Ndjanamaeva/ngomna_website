@@ -13,6 +13,7 @@ import Vision from './pages/Vision';
 import Mission from './pages/Mission';
 import Perspectives from './pages/Perspectives';
 import Carousel from './pages/Carousel';
+import Newcarousel from './pages/Newcarousel';
 import OTP from './pages/OTP';
 import DGI from './pages/DGI';
 import Email from './pages/Email';
@@ -44,6 +45,7 @@ function App() {
           <Route path="/Whatsapp" element={<Whatsapp/>}/>
           <Route path="/Email" element={<Email/>}/>
           <Route path="/Facebook" element={<Facebook/>}/>
+          <Route path="/Newcarousel" element={<Newcarousel/>}/>
           <Route path="*" element={<Pagenotfound/>}/>
         </Routes>
       </BrowserRouter>

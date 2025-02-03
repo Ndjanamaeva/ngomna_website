@@ -5,6 +5,7 @@ import HeroSection from '../pages/HeroSection';
 import Aboutngomna from './Boxes';
 import Carousel from '../pages/Carousel'
 import FAQs from '../pages/FAQs'
+import Newcarousel from './Newcarousel'
 import { Divider } from '@mui/material';
 
 

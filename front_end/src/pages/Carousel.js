@@ -70,13 +70,6 @@ export default function Carousel() {
 
   return (
     <div className="carousel-container" ref={carouselRef}>
-      <div className="carousel-title animate">
-        <Typography
-          component="h2"
-          variant="h4"
-          >nGomna gives you full control on your payslips
-        </Typography>
-      </div>
       <div className="carousel-text-area">
         <p className='description'>{imageData[currentSlide].description}</p>
         <p className="smaller-text" style={{ marginBottom: '30px' }}>{imageData[currentSlide].smallerText} </p>

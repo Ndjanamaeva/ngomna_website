@@ -9,6 +9,7 @@ body {
   justify-content: space-between;
   padding: 20px;
   overflow: hidden;
+  height:700px;
 }
 
 .hero-content {

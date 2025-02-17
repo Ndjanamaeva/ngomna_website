@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const menuRoutes = require('./Routes/routes');
 const linkRoutes = require('./Routes/routes');
+const pageRoutes = require('./Routes/routes');
 const app = express();
 const port = 5000;
 
@@ -15,6 +16,11 @@ app.use(menuRoutes);
 
 // Use routes for links
 app.use(linkRoutes);
+
+
+// Use Routes for pages
+app.use(pageRoutes);
+
 
 // Start the server
 app.listen(port, () => {

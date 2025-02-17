@@ -30,13 +30,13 @@ const columns = [
 ];
 
 export default function FeaturesPage() {
-  const [menuItems, setMenuItems] = React.useState([]);
+  const [pages, setPages] = React.useState([]); // Change here
   const [editOpen, setEditOpen] = React.useState(false);
+  const [formData, setFormData] = React.useState({ label: '', contentType: '' });
+  const [currentEdit, setCurrentEdit] = React.useState(null);
   const [textEditOpen, setTextEditOpen] = React.useState(false);
   const [imageEditOpen, setImageEditOpen] = React.useState(false);
   const [videoEditOpen, setVideoEditOpen] = React.useState(false); // New state for video editing
-  const [formData, setFormData] = React.useState({ label: '', contentType: '' });
-  const [currentEdit, setCurrentEdit] = React.useState(null);
   const [textData, setTextData] = React.useState({ title: '', description: '' });
   const [images, setImages] = React.useState([]);
   const [imageLink, setImageLink] = React.useState('');
@@ -45,17 +45,17 @@ export default function FeaturesPage() {
   const [videoLink, setVideoLink] = React.useState(''); // State for video link
   const [videoFile, setVideoFile] = React.useState(null); // State for uploaded video
 
-  // Fetch menu items
+  // Fetch pages
   React.useEffect(() => {
-    const fetchMenuItems = async () => {
+    const fetchPages = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/menuitems/1');
-        setMenuItems(response.data);
+        const response = await axios.get('http://localhost:5000/api/pages'); // Change endpoint to fetch pages
+        setPages(response.data);
       } catch (error) {
-        console.error('Error fetching menu items:', error);
+        console.error('Error fetching pages:', error);
       }
     };
-    fetchMenuItems();
+    fetchPages();
   }, []);
 
   // Handle form submit (edit only)
@@ -67,9 +67,9 @@ export default function FeaturesPage() {
 
     try {
       const updatedData = { label: formData.label, contentType: formData.contentType };
-      await axios.put(`http://localhost:5000/api/menuitems/label/${currentEdit.label}`, updatedData);
+      await axios.put(`http://localhost:5000/api/pages/label/${currentEdit.label}`, updatedData); // Update endpoint
 
-      setMenuItems(menuItems.map(item =>
+      setPages(pages.map(item =>
         item.label === currentEdit.label ? { ...item, label: formData.label, contentType: formData.contentType } : item
       ));
 
@@ -77,7 +77,7 @@ export default function FeaturesPage() {
       setCurrentEdit(null);
       setFormData({ label: '', contentType: '' });
     } catch (error) {
-      console.error('Error updating menu item:', error);
+      console.error('Error updating page:', error);
       alert('An error occurred. Please try again.');
     }
   };
@@ -87,22 +87,6 @@ export default function FeaturesPage() {
     setCurrentEdit(item);
     setFormData({ label: item.label, contentType: item.contentType || '' });
     setEditOpen(true);
-  };
-
-  // Handle content type change
-  const handleContentTypeChange = (e) => {
-    const selectedType = e.target.value;
-    setFormData({ ...formData, contentType: selectedType });
-
-    if (selectedType === 'text') {
-      setTextEditOpen(true);
-    } else if (selectedType === 'image') {
-      setImageEditOpen(true);
-      fetchImages(); // Fetch images when opening the dialog
-    } else if (selectedType === 'video') {
-      setVideoEditOpen(true); // Open the video edit dialog
-      fetchVideos(); // Fetch videos when opening the dialog
-    }
   };
 
   // Fetch images
@@ -122,6 +106,22 @@ export default function FeaturesPage() {
       setVideos(response.data); // Assuming the response contains an array of video URLs
     } catch (error) {
       console.error('Error fetching videos:', error);
+    }
+  };
+
+  // Handle content type change
+  const handleContentTypeChange = (e) => {
+    const selectedType = e.target.value;
+    setFormData({ ...formData, contentType: selectedType });
+
+    if (selectedType === 'text') {
+      setTextEditOpen(true);
+    } else if (selectedType === 'image') {
+      setImageEditOpen(true);
+      fetchImages(); // Fetch images when opening the dialog
+    } else if (selectedType === 'video') {
+      setVideoEditOpen(true); // Open the video edit dialog
+      fetchVideos(); // Fetch videos when opening the dialog
     }
   };
 
@@ -205,10 +205,10 @@ export default function FeaturesPage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {menuItems.map((item, index) => (
+                {pages.map((item, index) => ( // Change here
                   <TableRow hover role="checkbox" tabIndex={-1} key={item.label}>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{item.label}</TableCell>
+                    <TableCell>{item.name}</TableCell> {/* Change here to display page name */}
                     <TableCell align="center">
                       <Button
                         variant="contained"
@@ -228,7 +228,7 @@ export default function FeaturesPage() {
           </TableContainer>
         </Paper>
       </Box>
-      {/* Dialog for Edit Menu Item */}
+      {/* Dialog for Edit Page */}
       <Dialog open={editOpen} onClose={() => setEditOpen(false)}>
         <DialogTitle>Select the page content to edit</DialogTitle>
         <DialogContent>

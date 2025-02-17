@@ -202,3 +202,15 @@ exports.getLinksByMenuId = async (menuId) => {
     throw new Error('Failed to fetch links');
   }
 };
+
+exports.getAllPages = async () => {
+  return await Page.findAll();
+};
+
+exports.updatePage = async (id, data) => {
+  const page = await Page.findByPk(id);
+  if (page) {
+    return await page.update(data);
+  }
+  return null; // Page not found
+};

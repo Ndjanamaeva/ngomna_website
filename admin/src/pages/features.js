@@ -15,6 +15,7 @@ import '../styles/feature.css';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import Tooltip from '@mui/material/Tooltip'; // Import Tooltip
 
 const columns = [
   { id: 'number', label: 'N°', minWidth: 50 },
@@ -115,16 +116,18 @@ export default function FeaturesPage() {
       <div className="heading">
         <h1>FEATURES MENU MANAGEMENT</h1>
       </div>
-      <div className="add" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px', marginTop: '100px', paddingLeft: '275px' }}>
+      <div className="add" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px', marginTop: '80px', marginBottom:'-20px', paddingLeft: '275px' }}>
         <h5>Add a Menu Item Here!</h5>
-        <AddBoxIcon
-          color="primary"
-          size="large"
-          sx={{ color: 'green' }}
-          onClick={handleOpenForm}
-        >
-          Add
-        </AddBoxIcon>
+        <Tooltip title="Add Menu Item">
+          <AddBoxIcon
+            color="primary"
+            size="large"
+            sx={{ color: 'green' }}
+            onClick={handleOpenForm}
+          >
+            Add
+          </AddBoxIcon>
+        </Tooltip>
       </div>
 
       <Box
@@ -159,24 +162,28 @@ export default function FeaturesPage() {
                     <TableCell>{index + 1}</TableCell> {/* Auto-increment N° */}
                     <TableCell>{item.label}</TableCell>
                     <TableCell align="center">
-                      <EditIcon
-                        variant="contained"
-                        color="secondary"
-                        size="small"
-                        sx={{ color: 'blue' }}
-                        style={{ marginRight: '20px' }}
-                        onClick={() => handleOpenEditForm(item)}
-                      >
-                        Edit
-                      </EditIcon>
-                      <DeleteIcon
-                        color="primary"
-                        size="small"
-                        sx={{ color: 'red', marginLeft: '20px' }}
-                        onClick={() => handleDelete(item.label)}
-                      >
-                        Delete
-                      </DeleteIcon>
+                      <Tooltip title="Edit Menu Item">
+                        <EditIcon
+                          variant="contained"
+                          color="secondary"
+                          size="small"
+                          sx={{ color: 'blue' }}
+                          style={{ marginRight: '20px' }}
+                          onClick={() => handleOpenEditForm(item)}
+                        >
+                          Edit
+                        </EditIcon>
+                      </Tooltip>
+                      <Tooltip title="Delete Menu Item">
+                        <DeleteIcon
+                          color="primary"
+                          size="small"
+                          sx={{ color: 'red', marginLeft: '20px' }}
+                          onClick={() => handleDelete(item.label)}
+                        >
+                          Delete
+                        </DeleteIcon>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 ))}

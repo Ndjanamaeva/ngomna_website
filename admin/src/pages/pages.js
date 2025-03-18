@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import Layout from './../components/layout/layout';
 import axios from 'axios';
 import EditIcon from '@mui/icons-material/Edit';
+import Tooltip from '@mui/material/Tooltip'; // Import Tooltip
 import {
   TextField,
   Dialog,
@@ -211,16 +212,18 @@ export default function FeaturesPage() {
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{item.name}</TableCell> {/* Change here to display page name */}
                     <TableCell align="center">
-                      <EditIcon
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        sx={{ color: 'blue' }}
-                        style={{ marginRight: '8px' }}
-                        onClick={() => handleOpenEditForm(item)}
-                      >
-                        Edit
-                      </EditIcon>
+                      <Tooltip title="Edit Page Content"> {/* Add Tooltip */}
+                        <EditIcon
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          sx={{ color: 'blue' }}
+                          style={{ marginRight: '8px' }}
+                          onClick={() => handleOpenEditForm(item)}
+                        >
+                          Edit
+                        </EditIcon>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -300,7 +303,7 @@ export default function FeaturesPage() {
           <div>
             <h4>Available Images:</h4>
             {images.map((img, index) => (
-              <img key={index} src={img} alt={`Image ${index}`} style={{ width: '100px', margin: '5px' }} />
+              <img key={index} src={img} alt={`{index}`} style={{ width: '100px', margin: '5px' }} />
             ))}
           </div>
           <TextField

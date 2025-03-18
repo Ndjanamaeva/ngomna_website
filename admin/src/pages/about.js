@@ -14,6 +14,7 @@ import '../styles/feature.css';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import Tooltip from '@mui/material/Tooltip'; // Import Tooltip
 
 const columns = [
   { id: 'number', label: 'N°', minWidth: 50 },
@@ -108,16 +109,18 @@ export default function CenteredTable() {
       <div className="heading">
         <h1>ABOUT MENU MANAGEMENT</h1>
       </div>
-      <div className="add" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px', marginTop: '50px', paddingLeft: '380px' }}>
+      <div className="add" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px', marginTop: '80px', paddingLeft: '380px' }}>
         <h5>Add a Menu Item Here!</h5>
-        <AddBoxIcon
-          color="primary"
-          size="large"
-          sx={{ color: 'green' }}
-          onClick={handleOpenForm}
-        >
-          Add
-        </AddBoxIcon>
+        <Tooltip title="Add Menu Item">
+          <AddBoxIcon
+            color="primary"
+            size="large"
+            sx={{ color: 'green' }}
+            onClick={handleOpenForm}
+          >
+            Add
+          </AddBoxIcon>
+        </Tooltip>
       </div>
 
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', boxSizing: 'border-box', marginTop: '20px', padding: '16px' }}>
@@ -139,23 +142,27 @@ export default function CenteredTable() {
                     <TableCell>{index + 1}</TableCell> {/* Auto-increment N° */}
                     <TableCell>{item.label}</TableCell>
                     <TableCell align="center">
-                      <EditIcon
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        sx={{ color: 'blue', marginRight: '16px' }} // Increased marginRight for more space
-                        onClick={() => handleOpenEditForm(item)}
-                      >
-                        Edit
-                      </EditIcon>
-                      <DeleteIcon
-                        color="primary"
-                        size="small"
-                        sx={{ color: 'red' }}
-                        onClick={() => handleDelete(item.label)}
-                      >
-                        Delete
-                      </DeleteIcon>
+                      <Tooltip title="Edit Menu Item">
+                        <EditIcon
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          sx={{ color: 'blue', marginRight: '16px' }} // Increased marginRight for more space
+                          onClick={() => handleOpenEditForm(item)}
+                        >
+                          Edit
+                        </EditIcon>
+                      </Tooltip>
+                      <Tooltip title="Delete Menu Item">
+                        <DeleteIcon
+                          color="primary"
+                          size="small"
+                          sx={{ color: 'red' }}
+                          onClick={() => handleDelete(item.label)}
+                        >
+                          Delete
+                        </DeleteIcon>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 ))}

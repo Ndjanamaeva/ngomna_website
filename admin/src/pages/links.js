@@ -14,6 +14,7 @@ import '../styles/feature.css';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import Tooltip from '@mui/material/Tooltip'; // Import Tooltip
 
 // Table columns definition
 const columns = [
@@ -136,14 +137,16 @@ export default function CenteredTable() {
         }}
       >
         <h5>Add a Link Here!</h5>
-        <AddBoxIcon
-          color="primary"
-          size="large"
-          sx={{ color: 'green' }}
-          onClick={handleOpenForm}
-        >
-          Add
-        </AddBoxIcon>
+        <Tooltip title="Add Link">
+          <AddBoxIcon
+            color="primary"
+            size="large"
+            sx={{ color: 'green' }}
+            onClick={handleOpenForm}
+          >
+            Add
+          </AddBoxIcon>
+        </Tooltip>
       </div>
 
       <Box
@@ -182,23 +185,27 @@ export default function CenteredTable() {
                     <TableCell>{index + 1}</TableCell> {/* Auto-increment N° */}
                     <TableCell>{item.label}</TableCell>
                     <TableCell align="center">
-                      <EditIcon
-                        variant="contained"
-                        color="secondary"
-                        size="small"
-                        sx={{ color: 'blue', marginRight: '20px' }} // Increased marginRight for more space
-                        onClick={() => handleEdit(item)}
-                      >
-                        Edit
-                      </EditIcon>
-                      <DeleteIcon
-                        color="primary"
-                        size="small"
-                        sx={{ color: 'red', marginLeft: '20px' }} // Added marginLeft for more space
-                        onClick={() => handleDelete(item.label)}
-                      >
-                        Delete
-                      </DeleteIcon>
+                      <Tooltip title="Edit Link">
+                        <EditIcon
+                          variant="contained"
+                          color="secondary"
+                          size="small"
+                          sx={{ color: 'blue', marginRight: '20px' }} // Increased marginRight for more space
+                          onClick={() => handleEdit(item)}
+                        >
+                          Edit
+                        </EditIcon>
+                      </Tooltip>
+                      <Tooltip title="Delete Link">
+                        <DeleteIcon
+                          color="primary"
+                          size="small"
+                          sx={{ color: 'red', marginLeft: '20px' }} // Added marginLeft for more space
+                          onClick={() => handleDelete(item.label)}
+                        >
+                          Delete
+                        </DeleteIcon>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 ))}

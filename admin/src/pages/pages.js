@@ -9,6 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Box from '@mui/material/Box';
 import Layout from './../components/layout/layout';
 import axios from 'axios';
+import EditIcon from '@mui/icons-material/Edit';
 import {
   TextField,
   Dialog,
@@ -175,7 +176,7 @@ export default function FeaturesPage() {
       <div className="heading">
         <h1>PAGE CONTENT MANAGEMENT</h1>
       </div>
-      <div className="instructions" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px', marginTop: '50px', marginBottom:'50px', paddingLeft: '280px' }}>
+      <div className="instructions marquee" style={{ marginTop: '50px', marginBottom: '50px', paddingLeft: '280px' }}>
         <h5>Modify page content here! Click on Edit to modify the content on the page selected.</h5>
       </div>
       <Box
@@ -210,16 +211,16 @@ export default function FeaturesPage() {
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{item.name}</TableCell> {/* Change here to display page name */}
                     <TableCell align="center">
-                      <Button
+                      <EditIcon
                         variant="contained"
-                        color="secondary"
+                        color="primary"
                         size="small"
-                        sx={{ backgroundColor: 'green' }}
+                        sx={{ color: 'blue' }}
                         style={{ marginRight: '8px' }}
                         onClick={() => handleOpenEditForm(item)}
                       >
                         Edit
-                      </Button>
+                      </EditIcon>
                     </TableCell>
                   </TableRow>
                 ))}

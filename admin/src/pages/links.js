@@ -6,12 +6,14 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Layout from './../components/layout/layout';
 import axios from 'axios';
-import { TextField, Dialog, DialogActions, DialogContent, DialogTitle, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { TextField, Dialog, DialogActions, DialogContent, DialogTitle, Select, MenuItem, FormControl, InputLabel, Button } from '@mui/material';
 import '../styles/feature.css';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
 // Table columns definition
 const columns = [
@@ -126,22 +128,22 @@ export default function CenteredTable() {
         style={{
           display: 'flex',
           justifyContent: 'flex-start',
-          alignItems: 'center',
+          alignItems: 'center', // Ensures vertical alignment with the table
           gap: '10px',
-          marginTop: '50px',
-          paddingLeft: '180px',
+          marginTop: '80px', // Adjusted marginTop to align with the table
+          paddingLeft: '280px',
+          marginBottom: '-20px'
         }}
       >
         <h5>Add a Link Here!</h5>
-        <Button
-          variant="contained"
-          color="secondary"
-          size="small"
-          sx={{ backgroundColor: 'green' }}
+        <AddBoxIcon
+          color="primary"
+          size="large"
+          sx={{ color: 'green' }}
           onClick={handleOpenForm}
         >
           Add
-        </Button>
+        </AddBoxIcon>
       </div>
 
       <Box
@@ -154,7 +156,7 @@ export default function CenteredTable() {
           height: 'calc(100vh - 100px)',
         }}
       >
-        <Paper sx={{ width: '100%', maxWidth: 1000, overflow: 'hidden', height: '100%' }}>
+        <Paper sx={{ width: '100%', maxWidth: 800, overflow: 'hidden', height: '80%' }}> {/* Adjusted maxWidth and height */}
           <TableContainer sx={{ maxHeight: '100%' }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
@@ -180,27 +182,23 @@ export default function CenteredTable() {
                     <TableCell>{index + 1}</TableCell> {/* Auto-increment N° */}
                     <TableCell>{item.label}</TableCell>
                     <TableCell align="center">
-                      {/* Edit Button */}
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        style={{ marginRight: '8px', backgroundColor: 'blue' }}
-                        onClick={() => handleEdit(item)} // Call handleEdit when clicking Edit
-                      >
-                        Edit
-                      </Button>
-
-                      {/* Delete Button */}
-                      <Button
+                      <EditIcon
                         variant="contained"
                         color="secondary"
                         size="small"
-                        style={{ backgroundColor: 'red' }}
-                        onClick={() => handleDelete(item.label)} // Call handleDelete when clicking Delete
+                        sx={{ color: 'blue', marginRight: '20px' }} // Increased marginRight for more space
+                        onClick={() => handleEdit(item)}
+                      >
+                        Edit
+                      </EditIcon>
+                      <DeleteIcon
+                        color="primary"
+                        size="small"
+                        sx={{ color: 'red', marginLeft: '20px' }} // Added marginLeft for more space
+                        onClick={() => handleDelete(item.label)}
                       >
                         Delete
-                      </Button>
+                      </DeleteIcon>
                     </TableCell>
                   </TableRow>
                 ))}

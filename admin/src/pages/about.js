@@ -6,16 +6,17 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Layout from './../components/layout/layout';
 import axios from 'axios';
-import { TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { TextField, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
 import '../styles/feature.css';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
-// Table columns definition
 const columns = [
-  { id: 'number', label: 'N°', minWidth: 50 }, // N° column
+  { id: 'number', label: 'N°', minWidth: 50 },
   { id: 'menuitem', label: 'Menu Item', minWidth: 150 },
   { id: 'actions', label: 'Actions', minWidth: 200, align: 'center' },
 ];
@@ -109,7 +110,14 @@ export default function CenteredTable() {
       </div>
       <div className="add" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '10px', marginTop: '50px', paddingLeft: '380px' }}>
         <h5>Add a Menu Item Here!</h5>
-        <Button variant="contained" color="secondary" size="small" sx={{ backgroundColor: 'green' }} onClick={handleOpenForm}>Add</Button>
+        <AddBoxIcon
+          color="primary"
+          size="large"
+          sx={{ color: 'green' }}
+          onClick={handleOpenForm}
+        >
+          Add
+        </AddBoxIcon>
       </div>
 
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', boxSizing: 'border-box', marginTop: '20px', padding: '16px' }}>
@@ -131,8 +139,23 @@ export default function CenteredTable() {
                     <TableCell>{index + 1}</TableCell> {/* Auto-increment N° */}
                     <TableCell>{item.label}</TableCell>
                     <TableCell align="center">
-                      <Button variant="contained" color="primary" size="small" style={{ marginRight: '8px' }} onClick={() => handleOpenEditForm(item)}>Edit</Button>
-                      <Button variant="contained" color="secondary" size="small" style={{ backgroundColor: 'red' }} onClick={() => handleDelete(item.label)}>Delete</Button>
+                      <EditIcon
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        sx={{ color: 'blue', marginRight: '16px' }} // Increased marginRight for more space
+                        onClick={() => handleOpenEditForm(item)}
+                      >
+                        Edit
+                      </EditIcon>
+                      <DeleteIcon
+                        color="primary"
+                        size="small"
+                        sx={{ color: 'red' }}
+                        onClick={() => handleDelete(item.label)}
+                      >
+                        Delete
+                      </DeleteIcon>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -146,7 +169,16 @@ export default function CenteredTable() {
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Add Menu Item</DialogTitle>
         <DialogContent>
-          <TextField autoFocus margin="dense" label="Menu Item Label" type="text" fullWidth variant="outlined" value={formData.label} onChange={(e) => setFormData({ label: e.target.value })} />
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Menu Item Label"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={formData.label}
+            onChange={(e) => setFormData({ label: e.target.value })}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="primary">Cancel</Button>
@@ -158,7 +190,16 @@ export default function CenteredTable() {
       <Dialog open={editOpen} onClose={() => setEditOpen(false)}>
         <DialogTitle>Edit Menu Item</DialogTitle>
         <DialogContent>
-          <TextField autoFocus margin="dense" label="Menu Item Label" type="text" fullWidth variant="outlined" value={formData.label} onChange={(e) => setFormData({ label: e.target.value })} />
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Menu Item Label"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={formData.label}
+            onChange={(e) => setFormData({ label: e.target.value })}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEditOpen(false)} color="primary">Cancel</Button>

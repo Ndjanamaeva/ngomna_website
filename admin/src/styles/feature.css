@@ -2,6 +2,7 @@
     text-align: center;
     font-size: 22px;
     margin-top: 50px;
+    color: green; /* Set the title color to green */
 }
 
 h5 {
@@ -11,4 +12,27 @@ h5 {
 .select {
     text-align: center;
     margin-top: 50px;
+}
+
+.marquee {
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.marquee h5 {
+  display: inline-block;
+  animation: marquee 30s linear infinite; /* Adjusted duration to 30s for slower movement */
+  color: black; /* Set the moving text color to black */
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }

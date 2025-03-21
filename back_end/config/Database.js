@@ -63,6 +63,31 @@ const Link = sequelize.define('Link', {
   }
 });
 
+// Define the Text model (text table)
+const Text = sequelize.define('Text', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  content: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  pageId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: Page,
+      key: 'id'
+    }
+  }
+});
+
 // Define the relationships with cascading behavior
 Menu.hasMany(MenuItem, {
   foreignKey: 'menuId',
@@ -104,6 +129,18 @@ Page.hasMany(Link, {
   onDelete: 'CASCADE' // Cascade delete for Links when Page is deleted
 });
 
+// Define the relationship between Text and Page
+Text.belongsTo(Page, {
+  foreignKey: 'pageId',
+  as: 'page',
+  onDelete: 'CASCADE' // Cascade delete for Text when Page is deleted
+});
+Page.hasMany(Text, {
+  foreignKey: 'pageId',
+  as: 'texts',
+  onDelete: 'CASCADE' // Ensure deletion of Texts when Page is deleted
+});
+
 // Sync the models with the database and insert sample data
 sequelize.sync({ force: true }) // This will recreate the tables
   .then(async () => {
@@ -130,6 +167,27 @@ sequelize.sync({ force: true }) // This will recreate the tables
 
     console.log('Pages created:', pages);
 
+    // Add default text entries for all pages
+    const texts = await Text.bulkCreate([
+      { title: 'Payslips', content: 'Welcome to the Payslips page. Here you can view and manage your payslips securely.', pageId: pages[0].id },
+      { title: 'Information', content: 'This is the Information page. Find all the details you need here.', pageId: pages[1].id },
+      { title: 'Notifications', content: 'Stay updated with the latest notifications on this page.', pageId: pages[2].id },
+      { title: 'Census', content: 'Welcome to the Census page. Manage census data efficiently.', pageId: pages[3].id },
+      { title: 'Messaging', content: 'Send and receive messages securely on the Messaging page.', pageId: pages[4].id },
+      { title: 'Children', content: 'Manage information about children on this page.', pageId: pages[5].id },
+      { title: 'Security', content: 'Learn about security measures and manage your settings here.', pageId: pages[6].id },
+      { title: 'OTP', content: 'Generate and manage OTPs securely on this page.', pageId: pages[7].id },
+      { title: 'DGI', content: 'Access DGI-related information and resources here.', pageId: pages[8].id },
+      { title: 'Mission', content: 'Learn about our mission and goals on this page.', pageId: pages[9].id },
+      { title: 'Vision', content: 'Discover our vision for the future on this page.', pageId: pages[10].id },
+      { title: 'Perspectives', content: 'Explore different perspectives and insights here.', pageId: pages[11].id },
+      { title: 'WhatsApp', content: 'Connect with us on WhatsApp through this page.', pageId: pages[12].id },
+      { title: 'Email', content: 'Reach out to us via email using the information on this page.', pageId: pages[13].id },
+      { title: 'Facebook', content: 'Follow us on Facebook for updates and more.', pageId: pages[14].id }
+    ]);
+
+    console.log('Text entries created:', texts);
+
     // Create menus 'features', 'about', and 'contact'
     const featuresMenu = await Menu.create({
       title: 'features'
@@ -145,10 +203,10 @@ sequelize.sync({ force: true }) // This will recreate the tables
 
     console.log('Menus created:', { featuresMenu, aboutMenu, contactMenu });
 
-     // Create links
-     const links = await Link.bulkCreate([
+    // Create links
+    const links = await Link.bulkCreate([
       { label: 'payslips', menuId: featuresMenu.id, url: '/payslips', pageId: pages[0].id },
-      { label: 'information', menuId: featuresMenu.id,  url: '/information', pageId: pages[1].id },
+      { label: 'information', menuId: featuresMenu.id, url: '/information', pageId: pages[1].id },
       { label: 'notifications', menuId: featuresMenu.id, url: '/notifications', pageId: pages[2].id },
       { label: 'census', menuId: featuresMenu.id, url: '/census', pageId: pages[3].id },
       { label: 'messaging', menuId: featuresMenu.id, url: '/messaging', pageId: pages[4].id },
@@ -159,9 +217,9 @@ sequelize.sync({ force: true }) // This will recreate the tables
       { label: 'mission', menuId: aboutMenu.id, url: '/mission', pageId: pages[9].id },
       { label: 'vision', menuId: aboutMenu.id, url: '/vision', pageId: pages[10].id },
       { label: 'perspectives', menuId: aboutMenu.id, url: '/perspectives', pageId: pages[11].id },
-      { label: 'whatsapp', menuId: contactMenu.id, url: '/whatsapp', pageId: pages[12].id  },
-      { label: 'email', menuId: contactMenu.id, url: '/email', pageId: pages[13].id  },
-      { label: 'facebook', menuId: contactMenu.id, url: '/facebook', pageId: pages[14].id  }
+      { label: 'whatsapp', menuId: contactMenu.id, url: '/whatsapp', pageId: pages[12].id },
+      { label: 'email', menuId: contactMenu.id, url: '/email', pageId: pages[13].id },
+      { label: 'facebook', menuId: contactMenu.id, url: '/facebook', pageId: pages[14].id }
     ]);
 
     console.log('Links created:', links);
@@ -192,4 +250,4 @@ sequelize.sync({ force: true }) // This will recreate the tables
     console.error('Unable to create tables:', err);
   });
 
-module.exports = { sequelize, Menu, MenuItem, Page, Link };
+module.exports = { sequelize, Menu, MenuItem, Page, Link, Text };

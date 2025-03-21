@@ -8,7 +8,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
-const Layout = () => {
+const Layout = ({ title, content }) => {
   return (
     <div className='container'>
       <Header/>
@@ -45,7 +45,10 @@ const Layout = () => {
             >
               <CardContent sx={{ textAlign: 'center' }}>
                 <Typography variant="h5" component="h1" sx={{ fontFamily: 'Arial', fontWeight: 'bold', textTransform: 'uppercase' }}>
-                  
+                  {title}
+                </Typography>
+                <Typography variant="body1" sx={{ fontFamily: 'Arial', marginTop: 2 }}>
+                  {content}
                 </Typography>
               </CardContent>
             </Card>

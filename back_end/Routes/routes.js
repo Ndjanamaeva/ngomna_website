@@ -29,5 +29,6 @@ router.put('/api/:pageId', pageController.updatePage);
 
 // Text Routes
 router.get('/api/text/:pageId', mediaController.getTextByPageId); // Add this route
+router.put('/api/text/:pageId', mediaController.updateTextByPageId); // Add this route for updating text
 
 module.exports = router;

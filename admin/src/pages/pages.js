@@ -24,6 +24,8 @@ import {
   Button,
 } from '@mui/material';
 import '../styles/feature.css';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const columns = [
   { id: 'number', label: 'N°', minWidth: 50 },
@@ -46,6 +48,8 @@ export default function FeaturesPage() {
   const [videos, setVideos] = React.useState([]); // State to hold videos
   const [videoLink, setVideoLink] = React.useState(''); // State for video link
   const [videoFile, setVideoFile] = React.useState(null); // State for uploaded video
+  const [successMessage, setSuccessMessage] = React.useState('');
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
 
   // Fetch pages
   React.useEffect(() => {
@@ -87,8 +91,19 @@ export default function FeaturesPage() {
   // Handle open form for editing
   const handleOpenEditForm = (item) => {
     setCurrentEdit(item);
-    setFormData({ label: item.label, contentType: item.contentType || '' });
+    setFormData({ label: item.name, contentType: item.contentType || '' });
     setEditOpen(true);
+  };
+
+  // Fetch text data for a page
+  const fetchTextData = async (pageId) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/text/${pageId}`);
+      setTextData({ title: response.data.title, description: response.data.content });
+    } catch (error) {
+      console.error('Error fetching text data:', error);
+      setTextData({ title: '', description: '' });
+    }
   };
 
   // Fetch images
@@ -115,23 +130,44 @@ export default function FeaturesPage() {
   const handleContentTypeChange = (e) => {
     const selectedType = e.target.value;
     setFormData({ ...formData, contentType: selectedType });
+  };
 
-    if (selectedType === 'text') {
+  // Add a new function to handle 'Next' after content type selection
+  const handleContentTypeNext = () => {
+    if (formData.contentType === 'text') {
+      if (currentEdit && currentEdit.id) {
+        fetchTextData(currentEdit.id);
+      }
       setTextEditOpen(true);
-    } else if (selectedType === 'image') {
+    } else if (formData.contentType === 'image') {
       setImageEditOpen(true);
-      fetchImages(); // Fetch images when opening the dialog
-    } else if (selectedType === 'video') {
-      setVideoEditOpen(true); // Open the video edit dialog
-      fetchVideos(); // Fetch videos when opening the dialog
+      fetchImages();
+    } else if (formData.contentType === 'video') {
+      setVideoEditOpen(true);
+      fetchVideos();
     }
+    setEditOpen(false);
   };
 
   // Handle text submission
-  const handleTextSubmit = () => {
-    console.log('Text Data:', textData);
-    setTextEditOpen(false);
-    setTextData({ title: '', description: '' });
+  const handleTextSubmit = async () => {
+    if (!currentEdit || !currentEdit.id) {
+      alert('No page selected.');
+      return;
+    }
+    try {
+      await axios.put(`http://localhost:5000/api/text/${currentEdit.id}`, {
+        title: textData.title,
+        content: textData.description,
+      });
+      setTextEditOpen(false);
+      setTextData({ title: '', description: '' });
+      setSuccessMessage('Text content updated successfully!');
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error('Error updating text data:', error);
+      alert('Failed to update text content.');
+    }
   };
 
   // Handle image submission
@@ -244,7 +280,9 @@ export default function FeaturesPage() {
             fullWidth
             variant="outlined"
             value={formData.label}
-            onChange={(e) => setFormData({ ...formData, label: e.target.value })}
+            InputProps={{
+              readOnly: true,
+            }}
           />
           <FormControl fullWidth margin="dense">
             <InputLabel>Content Type</InputLabel>
@@ -253,7 +291,6 @@ export default function FeaturesPage() {
               onChange={handleContentTypeChange}
               label="Content Type"
             >
-              <MenuItem value=""><em>None</em></MenuItem>
               <MenuItem value="text">Text</MenuItem>
               <MenuItem value="image">Image</MenuItem>
               <MenuItem value="video">Video</MenuItem>
@@ -262,7 +299,7 @@ export default function FeaturesPage() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEditOpen(false)} color="primary">Cancel</Button>
-          <Button onClick={handleEditSubmit} color="primary">Save</Button>
+          <Button onClick={handleContentTypeNext} color="primary">Next</Button>
         </DialogActions>
       </Dialog>
 
@@ -360,6 +397,12 @@ export default function FeaturesPage() {
           <Button onClick={handleVideoSubmit} color="primary">Save</Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={() => setSnackbarOpen(false)}>
+        <MuiAlert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
+          {successMessage}
+        </MuiAlert>
+      </Snackbar>
     </Layout>
   );
 }

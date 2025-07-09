@@ -7,10 +7,11 @@ import CardContent from '@mui/material/CardContent';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import Carousel from '../../pages/Carousel';
 
 const Layout = ({ title, content }) => {
   return (
-    <div className='container'>
+    <div className='container' style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header/>
       <br/>
       <Container
@@ -23,8 +24,9 @@ const Layout = ({ title, content }) => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center', // Center the content vertically
-          minHeight: '100vh', // Make container at least full height of viewport
+          justifyContent: 'center',
+          minHeight: '100vh', // Fill entire viewport
+          flex: 1,
         }}
       >
         <Grid container spacing={5} alignItems="stretch" justifyContent="center">
@@ -38,18 +40,16 @@ const Layout = ({ title, content }) => {
                 background: '#FFFFFF',
                 color: '#000000',
                 width: '100%',
-                height: 500,
+                height: 725, // Increase card height to 725px
                 boxShadow: '0px 4px 20px rgb(128, 128, 128)',
                 borderRadius: 5,
               }}
             >
               <CardContent sx={{ textAlign: 'center' }}>
-                <Typography variant="h5" component="h1" sx={{ fontFamily: 'Arial', fontWeight: 'bold', textTransform: 'uppercase' }}>
+                <Typography variant="h5" component="h1" sx={{ fontFamily: 'Arial', fontWeight: 'bold', textTransform: 'uppercase', mb: 2 }}>
                   {title}
                 </Typography>
-                <Typography variant="body1" sx={{ fontFamily: 'Arial', marginTop: 2 }}>
-                  {content}
-                </Typography>
+                <Carousel />
               </CardContent>
             </Card>
           </Grid>
